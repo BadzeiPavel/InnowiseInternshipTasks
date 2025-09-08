@@ -12,6 +12,10 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <junit.jupiter.version>5.11.0</junit.jupiter.version>
+        <projectlombok.version>1.18.34</projectlombok.version>
+        <apache.maven-surefire-plugin.version>3.2.5</apache.maven-surefire-plugin.version>
     </properties>
 
     <dependencies>
@@ -19,14 +23,14 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.11.0</version> <!-- use latest stable -->
+            <version>${junit.jupiter.version}</version> <!-- use latest stable -->
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.34</version>
+            <version>${projectlombok.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -37,7 +41,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.2.5</version>
+                <version>${apache.maven-surefire-plugin.version}</version>
                 <configuration>
                     <useModulePath>false</useModulePath>
                 </configuration>

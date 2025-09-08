@@ -1,4 +1,5 @@
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -12,6 +13,7 @@ import salesandcustomeranalysis.enums.OrderStatus;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@DisplayName("OrderAnalytics Tests")
 class OrderAnalyticsTest {
 
   private List<Order> orders;
@@ -42,24 +44,21 @@ class OrderAnalyticsTest {
   }
 
   @Test
+  @DisplayName("Should return unique cities where orders came from")
   void testUniqueCities() {
     Set<String> cities = OrderAnalytics.getUniqueCities(orders);
     assertEquals(Set.of("New York", "London", "Paris"), cities);
   }
 
   @Test
+  @DisplayName("Should calculate total income from delivered orders")
   void testTotalIncome() {
     double income = OrderAnalytics.getTotalIncome(orders);
-    // Delivered orders:
-    // o1: 1000
-    // o2: 100 + 60 = 160
-    // o4: 50
-    // o5..o9: 5 × 60 = 300
-    // total = 1000 + 160 + 50 + 300 = 1510
     assertEquals(1510, income, 0.001);
   }
 
   @Test
+  @DisplayName("Should identify the most popular product")
   void testMostPopularProduct() {
     Optional<String> product = OrderAnalytics.getMostPopularProduct(orders);
     assertTrue(product.isPresent());
@@ -67,19 +66,14 @@ class OrderAnalyticsTest {
   }
 
   @Test
+  @DisplayName("Should compute average check for delivered orders")
   void testAverageCheckForDelivered() {
     double avg = OrderAnalytics.getAverageCheckForDelivered(orders);
-    // Delivered orders:
-    // o1 = 1000
-    // o2 = 160
-    // o4 = 50
-    // o5..o9 = 5 × 60 = 300
-    // total = 1510, count = 8 orders
-    // avg = 1510 / 8 = 188.75
     assertEquals(188.75, avg, 0.001);
   }
 
   @Test
+  @DisplayName("Should find loyal customers who ordered the most")
   void testLoyalCustomers() {
     Set<Customer> loyal = OrderAnalytics.getLoyalCustomers(orders);
     assertEquals(1, loyal.size());

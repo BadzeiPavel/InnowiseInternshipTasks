@@ -3,11 +3,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import customlinkedlist.LinkedList;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.NoSuchElementException;
 
-
+@DisplayName("LinkedList Tests")
 class LinkedListTest {
 
   private LinkedList<Integer> list;
@@ -18,6 +19,7 @@ class LinkedListTest {
   }
 
   @Test
+  @DisplayName("Should add elements to the front and retrieve them correctly")
   void testAddFirstAndGetFirst() {
     list.addFirst(10);
     list.addFirst(20);
@@ -27,6 +29,7 @@ class LinkedListTest {
   }
 
   @Test
+  @DisplayName("Should add elements to the end and retrieve them correctly")
   void testAddLastAndGetLast() {
     list.addLast(5);
     list.addLast(15);
@@ -36,6 +39,7 @@ class LinkedListTest {
   }
 
   @Test
+  @DisplayName("Should insert element at a specific index")
   void testAddByIndex() {
     list.addFirst(1);
     list.addLast(3);
@@ -45,6 +49,7 @@ class LinkedListTest {
   }
 
   @Test
+  @DisplayName("Should retrieve elements by index")
   void testGetByIndex() {
     list.addLast(100);
     list.addLast(200);
@@ -54,6 +59,7 @@ class LinkedListTest {
   }
 
   @Test
+  @DisplayName("Should remove the first element correctly")
   void testRemoveFirst() {
     list.addLast(10);
     list.addLast(20);
@@ -63,6 +69,7 @@ class LinkedListTest {
   }
 
   @Test
+  @DisplayName("Should remove the last element correctly")
   void testRemoveLast() {
     list.addLast(1);
     list.addLast(2);
@@ -73,6 +80,7 @@ class LinkedListTest {
   }
 
   @Test
+  @DisplayName("Should remove element by index correctly")
   void testRemoveByIndex() {
     list.addLast(11);
     list.addLast(22);
@@ -83,6 +91,7 @@ class LinkedListTest {
   }
 
   @Test
+  @DisplayName("Should throw exceptions when operating on an empty list")
   void testExceptionsOnEmptyList() {
     assertThrows(NoSuchElementException.class, () -> list.getFirst());
     assertThrows(NoSuchElementException.class, () -> list.getLast());
@@ -91,6 +100,7 @@ class LinkedListTest {
   }
 
   @Test
+  @DisplayName("Should throw IndexOutOfBoundsException for invalid indices")
   void testIndexOutOfBounds() {
     list.addLast(42);
     assertThrows(IndexOutOfBoundsException.class, () -> list.get(5));
