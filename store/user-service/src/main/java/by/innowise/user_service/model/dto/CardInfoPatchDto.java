@@ -2,7 +2,7 @@ package by.innowise.user_service.model.dto;
 
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Size;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,16 +17,14 @@ public class CardInfoPatchDto {
 
   private UUID id;
 
-  @Size(min = 4, max = 20, message = "Card number must not exceed 20 characters")
+  @Size(min = 4, max = 20, message = "Card number must be from 4 to 20 characters")
   private String number;
 
-  @Size(min = 5, max = 100, message = "Card holder name must not exceed 100 characters")
+  @Size(min = 4, max = 100, message = "Card holder name must be from 4 to 100 characters")
   private String holder;
 
   @Future(message = "Expiration date must be in the future")
-  private LocalDateTime expirationDate;
-
-  private UUID userId;
+  private LocalDate expirationDate;
 
   private Boolean deleted;
 }

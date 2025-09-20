@@ -12,7 +12,7 @@ public interface UserService {
 
   UserDto getUserById(UUID id);
 
-  List<UserDto> getUsersByIds(Set<UUID> ids);
+  List<UserDto> getUsersByIds(List<UUID> ids);
 
   UserDto getUserByEmail(String email);
 
@@ -20,7 +20,7 @@ public interface UserService {
 
   UserDto softDeleteUser(UUID id);
 
-  public UserDto patchUser(UUID id, UserPatchDto userPatchDto);
+  UserDto patchUser(UUID id, UserPatchDto userPatchDto);
 
-  void hardDeleteUser(UUID id);
+  UserDto hardDeleteUser(UUID id);
 }

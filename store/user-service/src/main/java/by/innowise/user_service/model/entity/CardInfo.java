@@ -14,7 +14,7 @@ import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -44,31 +44,23 @@ public class CardInfo {
   @ToString.Exclude
   @NotNull(message = "User is mandatory")
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "user_id",
-      nullable = false,
-      unique = true,
-      insertable = false,
-      updatable = false
-  )
+  @JoinColumn(name = "user_id", nullable = false, unique = true)
   private User user;
 
-  @Column(name = "user_id")
-  private UUID userId;
-
   @NotBlank(message = "Card number is mandatory")
-  @Size(min = 4, max = 20, message = "Card number must not exceed 20 characters")
+  @Size(min = 4, max = 20, message = "Card number must be from 4 to 20 characters")
   @Column(name = "number", nullable = false, length = 20)
   private String number;
 
   @NotBlank(message = "Card holder name is mandatory")
-  @Size(min = 5, max = 100, message = "Card holder name must not exceed 100 characters")
+  @Size(min = 4, max = 100, message = "Card holder name must be from 4 to 100 characters")
   @Column(name = "holder", nullable = false, length = 100)
   private String holder;
 
   @NotNull(message = "Expiration date is mandatory")
   @Future(message = "Expiration date must be in the future")
   @Column(name = "expiration_date", nullable = false)
-  private LocalDateTime expirationDate;
+  private LocalDate expirationDate;
 
   @Column(name = "is_deleted", nullable = false)
   private boolean deleted;
@@ -77,13 +69,17 @@ public class CardInfo {
     this.number = cardInfoDto.getNumber();
     this.holder = cardInfoDto.getHolder();
     this.expirationDate = cardInfoDto.getExpirationDate();
-    this.userId = cardInfoDto.getUserId();
   }
 
   public void patch(CardInfoPatchDto cardInfoPatchDto) {
     Optional.ofNullable(cardInfoPatchDto.getNumber()).ifPresent(this::setNumber);
     Optional.ofNullable(cardInfoPatchDto.getHolder()).ifPresent(this::setHolder);
     Optional.ofNullable(cardInfoPatchDto.getExpirationDate()).ifPresent(this::setExpirationDate);
-    Optional.ofNullable(cardInfoPatchDto.getUserId()).ifPresent(this::setUserId);
+  }
+
+  public void fillInOnCreate(User user) {
+    this.user = user;
+    this.holder = user.getName() + " " + user.getSurname();
+    this.expirationDate = LocalDate.now().plusYears(4);
   }
 }

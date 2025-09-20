@@ -1,19 +1,17 @@
 package by.innowise.user_service.service;
 
-import by.innowise.user_service.model.dto.UserDto;
-import by.innowise.user_service.exception.runtime.EntityNotFoundException;
 import by.innowise.user_service.mapper.DtoMapper;
 import by.innowise.user_service.mapper.EntityMapper;
+import by.innowise.user_service.model.dto.UserDto;
 import by.innowise.user_service.model.dto.UserPatchDto;
 import by.innowise.user_service.model.entity.User;
 import by.innowise.user_service.repository.UserRepository;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -37,8 +35,8 @@ public class UserServiceImpl implements UserService {
   }
 
   @Transactional(readOnly = true)
-  public List<UserDto> getUsersByIds(Set<UUID> ids) {
-    return repository.findAllById(ids).stream()
+  public List<UserDto> getUsersByIds(List<UUID> ids) {
+    return repository.findAllByIdIn(ids).stream()
         .map(dtoMapper::toUserDto)
         .collect(Collectors.toList());
   }
@@ -74,10 +72,9 @@ public class UserServiceImpl implements UserService {
   }
 
   @Transactional
-  public void hardDeleteUser(UUID id) {
-    if (!repository.existsById(id)) {
-      throw new EntityNotFoundException("User not found with id: " + id);
-    }
+  public UserDto hardDeleteUser(UUID id) {
+    User user = repository.findUserById(id);
     repository.deleteById(id);
+    return dtoMapper.toUserDto(user);
   }
 }

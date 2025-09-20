@@ -8,11 +8,11 @@ import java.util.UUID;
 
 public interface CardInfoService {
 
-  public CardInfoDto createCardInfo(CardInfoDto cardInfoDto);
+  public CardInfoDto createCardInfo(UUID userId, CardInfoDto cardInfoDto);
 
   public CardInfoDto getCardInfoById(UUID id);
 
-  public List<CardInfoDto> getCardInfosByIds(Set<UUID> ids);
+  public List<CardInfoDto> getCardInfosByIds(List<UUID> ids);
 
   public CardInfoDto updateCardInfo(UUID id, CardInfoDto cardInfoDto);
 
