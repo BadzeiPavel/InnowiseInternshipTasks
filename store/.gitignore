@@ -3,8 +3,6 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
-user-service/.env
-
 ### IntelliJ IDEA ###
 .idea/
 .idea/modules.xml
