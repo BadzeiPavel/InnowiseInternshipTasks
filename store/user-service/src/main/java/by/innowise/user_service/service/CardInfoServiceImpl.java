@@ -9,6 +9,7 @@ import by.innowise.user_service.model.entity.CardInfo;
 import by.innowise.user_service.model.entity.User;
 import by.innowise.user_service.repository.CardInfoRepository;
 import by.innowise.user_service.repository.UserRepository;
+import by.innowise.user_service.util.CardInfoUtil;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -30,7 +31,8 @@ public class CardInfoServiceImpl implements CardInfoService {
     CardInfo cardInfo = entityMapper.toCardInfo(cardInfoDto);
 
     User user = userRepository.findUserById(userId);
-    cardInfo.fillInOnCreate(user);
+    String number = getUniqueCardNumber();
+    cardInfo.fillInOnCreate(number, user);
 
     CardInfo saved = repository.save(cardInfo);
     return dtoMapper.toCardInfoDto(saved);
@@ -47,14 +49,6 @@ public class CardInfoServiceImpl implements CardInfoService {
     return repository.findAllByIdIn(ids).stream()
         .map(dtoMapper::toCardInfoDto)
         .collect(Collectors.toList());
-  }
-
-  @Transactional
-  public CardInfoDto updateCardInfo(UUID id, CardInfoDto cardInfoDto) {
-    CardInfo cardInfo = repository.findCardInfoById(id);
-    cardInfo.update(cardInfoDto);
-
-    return dtoMapper.toCardInfoDto(cardInfo);
   }
 
   @Transactional
@@ -79,5 +73,14 @@ public class CardInfoServiceImpl implements CardInfoService {
       throw new EntityNotFoundException("CardInfo not found with id: " + id);
     }
     repository.deleteById(id);
+  }
+
+  @Transactional(readOnly = true)
+  private String getUniqueCardNumber() {
+    String cardNumber;
+    do {
+      cardNumber = CardInfoUtil.generateCardNumber();
+    } while(repository.existsByNumber(cardNumber));
+    return cardNumber;
   }
 }

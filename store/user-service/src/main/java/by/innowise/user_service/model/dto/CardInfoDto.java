@@ -18,13 +18,12 @@ public class CardInfoDto {
 
   private UUID id;
 
-  @JsonIgnore
   private UserDto userDto;
 
-  @NotBlank(message = "Card number is mandatory")
-  @Size(min = 4, max = 20, message = "Card number must be from 4 to 20 characters")
   private String number;
 
+  @NotBlank(message = "Holder name is mandatory")
+  @Size(min = 5, max = 100, message = "Holder name must be from 4 to 20 characters")
   private String holder;
 
   private LocalDate expirationDate;

@@ -48,7 +48,7 @@ public class CardInfo {
   private User user;
 
   @NotBlank(message = "Card number is mandatory")
-  @Size(min = 4, max = 20, message = "Card number must be from 4 to 20 characters")
+  @Size(min = 16, max = 16, message = "Card number must be 16 characters")
   @Column(name = "number", nullable = false, length = 20)
   private String number;
 
@@ -65,21 +65,13 @@ public class CardInfo {
   @Column(name = "is_deleted", nullable = false)
   private boolean deleted;
 
-  public void update(CardInfoDto cardInfoDto) {
-    this.number = cardInfoDto.getNumber();
-    this.holder = cardInfoDto.getHolder();
-    this.expirationDate = cardInfoDto.getExpirationDate();
-  }
-
   public void patch(CardInfoPatchDto cardInfoPatchDto) {
-    Optional.ofNullable(cardInfoPatchDto.getNumber()).ifPresent(this::setNumber);
     Optional.ofNullable(cardInfoPatchDto.getHolder()).ifPresent(this::setHolder);
-    Optional.ofNullable(cardInfoPatchDto.getExpirationDate()).ifPresent(this::setExpirationDate);
   }
 
-  public void fillInOnCreate(User user) {
+  public void fillInOnCreate(String number, User user) {
     this.user = user;
-    this.holder = user.getName() + " " + user.getSurname();
+    this.number = number;
     this.expirationDate = LocalDate.now().plusYears(4);
   }
 }

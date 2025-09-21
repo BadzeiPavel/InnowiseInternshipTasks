@@ -15,7 +15,7 @@
           foreignKeyName="fk_card_info_user_id"
           references="users(id)"/>
       </column>
-      <column name="number" type="VARCHAR(20)">
+      <column name="number" type="VARCHAR(16)">
         <constraints nullable="false"/>
       </column>
       <column name="holder" type="VARCHAR(100)">

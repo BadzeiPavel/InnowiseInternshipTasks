@@ -48,21 +48,13 @@ public class CardInfoController {
     return ResponseEntity.ok(cardInfoService.getCardInfosByIds(getByIdsRequest.getIds()));
   }
 
-//  @PutMapping("/{id}")
-//  public ResponseEntity<CardInfoDto> updateCard(
-//      @PathVariable UUID id,
-//      @RequestBody CardInfoDto cardInfoDto
-//  ) {
-//    return ResponseEntity.ok(cardInfoService.updateCardInfo(id, cardInfoDto));
-//  }
-//
-//  @PatchMapping("/{id}")
-//  public ResponseEntity<CardInfoDto> patchCard(
-//      @PathVariable UUID id,
-//      @RequestBody CardInfoPatchDto cardInfoPatchDto
-//  ) {
-//    return ResponseEntity.ok(cardInfoService.patchCardInfo(id, cardInfoPatchDto));
-//  }
+  @PatchMapping("/{id}")
+  public ResponseEntity<CardInfoDto> patchCard(
+      @PathVariable UUID id,
+      @RequestBody CardInfoPatchDto cardInfoPatchDto
+  ) {
+    return ResponseEntity.ok(cardInfoService.patchCardInfo(id, cardInfoPatchDto));
+  }
 
   @DeleteMapping("/{id}")
   public ResponseEntity<CardInfoDto> softDeleteCard(@PathVariable UUID id) {

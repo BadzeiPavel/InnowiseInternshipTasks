@@ -11,9 +11,15 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CardInfoRepository extends JpaRepository<CardInfo, UUID> {
 
+  Boolean existsByNumberAndDeletedFalse(String number);
+
   List<CardInfo> findAllByIdInAndDeletedFalse(List<UUID> ids);
 
   Optional<CardInfo> findByIdAndDeletedFalse(UUID id);
+
+  default boolean existsByNumber(String number) {
+    return existsByNumberAndDeletedFalse(number);
+  }
 
   default List<CardInfo> findAllByIdIn(List<UUID> ids) {
     return findAllByIdInAndDeletedFalse(ids);
@@ -21,6 +27,6 @@ public interface CardInfoRepository extends JpaRepository<CardInfo, UUID> {
 
   default CardInfo findCardInfoById(UUID id) {
     return findByIdAndDeletedFalse(id)
-        .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
+        .orElseThrow(() -> new EntityNotFoundException("Card info not found with id: " + id));
   }
 }
