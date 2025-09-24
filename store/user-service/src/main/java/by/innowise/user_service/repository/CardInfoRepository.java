@@ -4,6 +4,7 @@ import by.innowise.user_service.exception.runtime.EntityNotFoundException;
 import by.innowise.user_service.model.entity.CardInfo;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -13,7 +14,7 @@ public interface CardInfoRepository extends JpaRepository<CardInfo, UUID> {
 
   Boolean existsByNumberAndDeletedFalse(String number);
 
-  List<CardInfo> findAllByIdInAndDeletedFalse(List<UUID> ids);
+  List<CardInfo> findAllByIdInAndDeletedFalse(Set<UUID> ids);
 
   Optional<CardInfo> findByIdAndDeletedFalse(UUID id);
 
@@ -21,7 +22,7 @@ public interface CardInfoRepository extends JpaRepository<CardInfo, UUID> {
     return existsByNumberAndDeletedFalse(number);
   }
 
-  default List<CardInfo> findAllByIdIn(List<UUID> ids) {
+  default List<CardInfo> findAllByIdIn(Set<UUID> ids) {
     return findAllByIdInAndDeletedFalse(ids);
   }
 

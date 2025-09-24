@@ -2,7 +2,7 @@ package by.innowise.user_service.service;
 
 import by.innowise.user_service.model.dto.UserDto;
 import by.innowise.user_service.model.dto.UserPatchDto;
-import java.util.List;
+import by.innowise.user_service.model.response.ListResponse;
 import java.util.Set;
 import java.util.UUID;
 
@@ -12,7 +12,7 @@ public interface UserService {
 
   UserDto getUserById(UUID id);
 
-  List<UserDto> getUsersByIds(List<UUID> ids);
+  ListResponse<UserDto> getUsersByIds(Set<UUID> ids);
 
   UserDto getUserByEmail(String email);
 

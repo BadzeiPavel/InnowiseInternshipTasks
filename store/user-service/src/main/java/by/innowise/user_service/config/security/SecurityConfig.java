@@ -1,4 +1,4 @@
-package by.innowise.user_service.config;
+package by.innowise.user_service.config.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

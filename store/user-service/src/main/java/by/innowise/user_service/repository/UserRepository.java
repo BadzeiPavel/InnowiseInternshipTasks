@@ -4,6 +4,7 @@ import by.innowise.user_service.exception.runtime.EntityNotFoundException;
 import by.innowise.user_service.model.entity.User;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -13,11 +14,11 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
   Optional<User> findByEmailAndDeletedFalse(String email);
 
-  List<User> findAllByIdInAndDeletedFalse(List<UUID> ids);
+  List<User> findAllByIdInAndDeletedFalse(Set<UUID> ids);
 
   Optional<User> findByIdAndDeletedFalse(UUID id);
 
-  default List<User> findAllByIdIn(List<UUID> ids) {
+  default List<User> findAllByIdIn(Set<UUID> ids) {
     return findAllByIdInAndDeletedFalse(ids);
   }
 

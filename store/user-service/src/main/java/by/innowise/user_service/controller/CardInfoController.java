@@ -3,9 +3,9 @@ package by.innowise.user_service.controller;
 import by.innowise.user_service.model.dto.CardInfoDto;
 import by.innowise.user_service.model.dto.CardInfoPatchDto;
 import by.innowise.user_service.model.request.GetByIdsRequest;
+import by.innowise.user_service.model.response.ListResponse;
 import by.innowise.user_service.service.CardInfoService;
 import jakarta.validation.Valid;
-import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,10 +15,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
@@ -32,9 +30,11 @@ public class CardInfoController {
   public ResponseEntity<CardInfoDto> createCard(
       @PathVariable UUID userId,
       @Valid @RequestBody CardInfoDto cardInfoDto) {
+    CardInfoDto createdCardInfo = cardInfoService.createCardInfo(userId, cardInfoDto);
+
     return ResponseEntity
         .status(HttpStatus.CREATED)
-        .body(cardInfoService.createCardInfo(userId, cardInfoDto));
+        .body(createdCardInfo);
   }
 
   @GetMapping("/{id}")
@@ -43,7 +43,7 @@ public class CardInfoController {
   }
 
   @GetMapping
-  public ResponseEntity<List<CardInfoDto>> getCardsByIds(
+  public ResponseEntity<ListResponse<CardInfoDto>> getCardsByIds(
       @RequestBody GetByIdsRequest getByIdsRequest) {
     return ResponseEntity.ok(cardInfoService.getCardInfosByIds(getByIdsRequest.getIds()));
   }
@@ -51,7 +51,7 @@ public class CardInfoController {
   @PatchMapping("/{id}")
   public ResponseEntity<CardInfoDto> patchCard(
       @PathVariable UUID id,
-      @RequestBody CardInfoPatchDto cardInfoPatchDto
+      @Valid @RequestBody CardInfoPatchDto cardInfoPatchDto
   ) {
     return ResponseEntity.ok(cardInfoService.patchCardInfo(id, cardInfoPatchDto));
   }
@@ -62,8 +62,7 @@ public class CardInfoController {
   }
 
   @DeleteMapping("/{id}/hard")
-  public ResponseEntity<Void> hardDeleteCard(@PathVariable UUID id) {
-    cardInfoService.hardDeleteCardInfo(id);
-    return ResponseEntity.noContent().build();
+  public ResponseEntity<CardInfoDto> hardDeleteCard(@PathVariable UUID id) {
+    return ResponseEntity.ok(cardInfoService.hardDeleteCardInfo(id));
   }
 }
