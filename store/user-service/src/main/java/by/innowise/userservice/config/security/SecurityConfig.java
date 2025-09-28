@@ -16,6 +16,7 @@ public class SecurityConfig {
             .cors(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
+                    "/actuator/health",
                     "/api/v1/**"
                 ).permitAll()
                 .anyRequest().authenticated()

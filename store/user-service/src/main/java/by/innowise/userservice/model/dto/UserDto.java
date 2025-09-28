@@ -42,6 +42,5 @@ public class UserDto {
   @JsonIgnore
   private boolean deleted;
 
-  @JsonIgnore
   private Set<CardInfoDto> cardInfos;
 }

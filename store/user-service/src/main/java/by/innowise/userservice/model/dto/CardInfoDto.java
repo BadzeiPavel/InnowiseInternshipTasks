@@ -1,5 +1,6 @@
 package by.innowise.userservice.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
@@ -17,6 +18,7 @@ public class CardInfoDto {
 
   private UUID id;
 
+  @JsonIgnore
   private UserDto userDto;
 
   private String number;
