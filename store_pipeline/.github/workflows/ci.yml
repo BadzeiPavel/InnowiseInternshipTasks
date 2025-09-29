@@ -2,7 +2,14 @@ name: Store Project CI Pipeline
 
 on:
   push:
-    branches: [ user-service/**, dev ]
+    branches:
+      - main
+      - dev
+      - 'user-service/**'
+  pull_request:
+    branches:
+      - main
+      - dev
 
 env:
   REGISTRY: ghcr.io
