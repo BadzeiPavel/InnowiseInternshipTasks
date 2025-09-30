@@ -3,6 +3,7 @@ package by.innowise.userservice.service;
 import by.innowise.userservice.model.dto.CardInfoDto;
 import by.innowise.userservice.model.dto.CardInfoPatchDto;
 import by.innowise.userservice.model.response.ListResponse;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -12,7 +13,7 @@ public interface CardInfoService {
 
   CardInfoDto getCardInfoById(UUID id);
 
-  ListResponse<CardInfoDto> getCardInfosByIds(Set<UUID> ids);
+  ListResponse<CardInfoDto> getCardInfosByIds(List<UUID> ids);
 
   CardInfoDto patchCardInfo(UUID id, CardInfoPatchDto cardInfoPatchDto);
 

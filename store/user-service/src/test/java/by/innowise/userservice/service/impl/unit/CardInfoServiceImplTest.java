@@ -89,7 +89,7 @@ class CardInfoServiceImplTest {
   void getCardInfosByIds_shouldReturnListResponse() {
     UUID id1 = UUID.randomUUID();
     UUID id2 = UUID.randomUUID();
-    Set<UUID> ids = Set.of(id1, id2);
+    List<UUID> ids = List.of(id1, id2);
 
     CardInfo entity1 = new CardInfo();
     CardInfo entity2 = new CardInfo();

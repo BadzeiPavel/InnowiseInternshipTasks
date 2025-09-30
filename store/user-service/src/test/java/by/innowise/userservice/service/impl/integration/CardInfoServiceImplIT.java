@@ -8,6 +8,7 @@ import by.innowise.userservice.repository.CardInfoRepository;
 import by.innowise.userservice.repository.UserRepository;
 import by.innowise.userservice.service.CardInfoService;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.BeforeAll;
@@ -83,7 +84,7 @@ class CardInfoServiceImplIT {
     CardInfoDto c2 = cardInfoService.createCardInfo(savedUser.getId(),
         TestDataFactory.createCardInfoDto("Jerry"));
 
-    ListResponse<CardInfoDto> response = cardInfoService.getCardInfosByIds(Set.of(c1.getId(), c2.getId()));
+    ListResponse<CardInfoDto> response = cardInfoService.getCardInfosByIds(List.of(c1.getId(), c2.getId()));
 
     assertThat(response.getItems()).hasSize(2);
     assertThat(response.getItems())
@@ -121,7 +122,7 @@ class CardInfoServiceImplIT {
 
     cardInfoService.hardDeleteCardInfo(created.getId());
 
-    ListResponse<CardInfoDto> response = cardInfoService.getCardInfosByIds(Set.of(created.getId()));
+    ListResponse<CardInfoDto> response = cardInfoService.getCardInfosByIds(List.of(created.getId()));
 
     assertThat(response.getItems()).isEmpty();
   }

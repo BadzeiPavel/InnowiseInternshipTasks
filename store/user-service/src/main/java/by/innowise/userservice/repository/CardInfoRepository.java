@@ -14,7 +14,7 @@ public interface CardInfoRepository extends JpaRepository<CardInfo, UUID> {
 
   Boolean existsByNumberAndDeletedFalse(String number);
 
-  List<CardInfo> findAllByIdInAndDeletedFalse(Set<UUID> ids);
+  List<CardInfo> findAllByIdInAndDeletedFalse(List<UUID> ids);
 
   Optional<CardInfo> findByIdAndDeletedFalse(UUID id);
 
@@ -22,7 +22,7 @@ public interface CardInfoRepository extends JpaRepository<CardInfo, UUID> {
     return existsByNumberAndDeletedFalse(number);
   }
 
-  default List<CardInfo> findAllByIdIn(Set<UUID> ids) {
+  default List<CardInfo> findAllByIdIn(List<UUID> ids) {
     return findAllByIdInAndDeletedFalse(ids);
   }
 

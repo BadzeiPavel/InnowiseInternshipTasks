@@ -65,7 +65,7 @@ public class CardInfoServiceImpl implements CardInfoService {
   @Override
   @Transactional(readOnly = true)
   @Cacheable(key = "'ids_' + #ids.hashCode()")
-  public ListResponse<CardInfoDto> getCardInfosByIds(Set<UUID> ids) {
+  public ListResponse<CardInfoDto> getCardInfosByIds(List<UUID> ids) {
     List<CardInfoDto> cardInfos = repository.findAllByIdIn(ids).stream()
         .map(dtoMapper::toCardInfoDto)
         .toList();
