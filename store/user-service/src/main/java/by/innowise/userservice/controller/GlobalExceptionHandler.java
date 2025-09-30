@@ -1,6 +1,6 @@
-package by.innowise.userservice.exception.handler;
+package by.innowise.userservice.controller;
 
-import by.innowise.userservice.exception.runtime.EntityNotFoundException;
+import by.innowise.userservice.exception.EntityNotFoundException;
 import by.innowise.userservice.model.response.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;

@@ -1,4 +1,4 @@
-package by.innowise.userservice.exception.runtime;
+package by.innowise.userservice.exception;
 
 public class EntityNotFoundException extends RuntimeException {
 

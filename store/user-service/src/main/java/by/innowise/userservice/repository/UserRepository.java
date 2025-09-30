@@ -1,6 +1,6 @@
 package by.innowise.userservice.repository;
 
-import by.innowise.userservice.exception.runtime.EntityNotFoundException;
+import by.innowise.userservice.exception.EntityNotFoundException;
 import by.innowise.userservice.model.entity.User;
 import java.util.List;
 import java.util.Optional;
