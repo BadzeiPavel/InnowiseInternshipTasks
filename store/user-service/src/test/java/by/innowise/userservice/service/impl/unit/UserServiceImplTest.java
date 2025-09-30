@@ -12,6 +12,7 @@ import by.innowise.userservice.repository.UserRepository;
 import by.innowise.userservice.service.impl.UserServiceImpl;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -67,7 +68,7 @@ class UserServiceImplTest {
     User entity = new User();
     UserDto dto = new UserDto();
 
-    when(repository.findUserById(id)).thenReturn(entity);
+    when(repository.findUserById(id)).thenReturn(Optional.of(entity));
     when(mapper.toUserDto(entity)).thenReturn(dto);
 
     UserDto result = service.getUserById(id);
@@ -104,7 +105,7 @@ class UserServiceImplTest {
     User entity = new User();
     UserDto dto = new UserDto();
 
-    when(repository.getByEmail(email)).thenReturn(entity);
+    when(repository.getByEmail(email)).thenReturn(Optional.of(entity));
     when(mapper.toUserDto(entity)).thenReturn(dto);
 
     UserDto result = service.getUserByEmail(email);
@@ -122,7 +123,7 @@ class UserServiceImplTest {
     UserDto outputDto = new UserDto();
     outputDto.setEmail("new@example.com");
 
-    when(repository.findUserById(id)).thenReturn(entity);
+    when(repository.findUserById(id)).thenReturn(Optional.ofNullable(entity));
     when(entity.getEmail()).thenReturn("old@example.com");
     when(mapper.toUserDto(entity)).thenReturn(outputDto);
 
@@ -144,7 +145,7 @@ class UserServiceImplTest {
     UserDto outputDto = new UserDto();
     outputDto.setEmail("new@example.com");
 
-    when(repository.findUserById(id)).thenReturn(entity);
+    when(repository.findUserById(id)).thenReturn(Optional.ofNullable(entity));
     when(entity.getEmail()).thenReturn("old@example.com");
     when(mapper.toUserDto(entity)).thenReturn(outputDto);
 
@@ -165,7 +166,7 @@ class UserServiceImplTest {
     entity.setDeleted(false);
     UserDto dto = new UserDto();
 
-    when(repository.findUserById(id)).thenReturn(entity);
+    when(repository.findUserById(id)).thenReturn(Optional.of(entity));
     when(mapper.toUserDto(entity)).thenReturn(dto);
 
     UserDto result = service.softDeleteUser(id);
@@ -192,7 +193,7 @@ class UserServiceImplTest {
     UserDto dto = new UserDto();
 
     Cache cardCache = mock(Cache.class);
-    when(repository.findUserById(id)).thenReturn(entity);
+    when(repository.findUserById(id)).thenReturn(Optional.of(entity));
     when(mapper.toUserDto(entity)).thenReturn(dto);
     when(cacheManager.getCache(RedisConfig.CARD_INFO_CACHE)).thenReturn(cardCache);
 

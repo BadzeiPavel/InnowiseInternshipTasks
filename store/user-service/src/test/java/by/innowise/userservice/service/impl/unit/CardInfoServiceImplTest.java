@@ -11,6 +11,7 @@ import by.innowise.userservice.repository.CardInfoRepository;
 import by.innowise.userservice.repository.UserRepository;
 import by.innowise.userservice.service.impl.CardInfoServiceImpl;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -54,7 +55,7 @@ class CardInfoServiceImplTest {
     CardInfoDto outputDto = new CardInfoDto();
 
     when(mapper.toCardInfo(inputDto)).thenReturn(entity);
-    when(userRepository.findUserById(userId)).thenReturn(user);
+    when(userRepository.findUserById(userId)).thenReturn(Optional.of(user));
     when(repository.save(entity)).thenReturn(savedEntity);
     when(mapper.toCardInfoDto(savedEntity)).thenReturn(outputDto);
 
@@ -71,7 +72,7 @@ class CardInfoServiceImplTest {
     CardInfo entity = new CardInfo();
     CardInfoDto dto = new CardInfoDto();
 
-    when(repository.findCardInfoById(id)).thenReturn(entity);
+    when(repository.findCardInfoById(id)).thenReturn(Optional.of(entity));
     when(mapper.toCardInfoDto(entity)).thenReturn(dto);
 
     CardInfoDto result = service.getCardInfoById(id);
@@ -115,7 +116,7 @@ class CardInfoServiceImplTest {
     CardInfoDto dto = new CardInfoDto();
 
     Cache cache = mock(Cache.class);
-    when(repository.findCardInfoById(id)).thenReturn(cardInfo);
+    when(repository.findCardInfoById(id)).thenReturn(Optional.of(cardInfo));
     when(mapper.toCardInfoDto(cardInfo)).thenReturn(dto);
     when(cacheManager.getCache(RedisConfig.USER_CACHE)).thenReturn(cache);
 
@@ -136,7 +137,7 @@ class CardInfoServiceImplTest {
     CardInfoDto dto = new CardInfoDto();
 
     Cache cache = mock(Cache.class);
-    when(repository.findCardInfoById(id)).thenReturn(cardInfo);
+    when(repository.findCardInfoById(id)).thenReturn(Optional.of(cardInfo));
     when(mapper.toCardInfoDto(cardInfo)).thenReturn(dto);
     when(cacheManager.getCache(RedisConfig.USER_CACHE)).thenReturn(cache);
 
@@ -157,7 +158,7 @@ class CardInfoServiceImplTest {
     CardInfoDto dto = new CardInfoDto();
 
     Cache cache = mock(Cache.class);
-    when(repository.findCardInfoById(id)).thenReturn(cardInfo);
+    when(repository.findCardInfoById(id)).thenReturn(Optional.of(cardInfo));
     when(cacheManager.getCache(RedisConfig.USER_CACHE)).thenReturn(cache);
     when(mapper.toCardInfoDto(cardInfo)).thenReturn(dto);
 

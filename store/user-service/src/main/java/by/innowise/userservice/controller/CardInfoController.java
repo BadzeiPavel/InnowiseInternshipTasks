@@ -2,7 +2,6 @@ package by.innowise.userservice.controller;
 
 import by.innowise.userservice.model.dto.CardInfoDto;
 import by.innowise.userservice.model.dto.CardInfoPatchDto;
-import by.innowise.userservice.model.request.GetByIdsRequest;
 import by.innowise.userservice.model.response.ListResponse;
 import by.innowise.userservice.service.CardInfoService;
 import jakarta.validation.Valid;

@@ -1,16 +1,15 @@
 package by.innowise.userservice.service.impl;
 
 import by.innowise.userservice.config.cache.RedisConfig;
+import by.innowise.userservice.exception.EntityNotFoundException;
 import by.innowise.userservice.mapper.CardInfoMapper;
 import by.innowise.userservice.mapper.UserMapper;
 import by.innowise.userservice.model.dto.CardInfoDto;
 import by.innowise.userservice.model.dto.CardInfoPatchDto;
 import by.innowise.userservice.model.dto.UserDto;
 import by.innowise.userservice.model.entity.CardInfo;
-import by.innowise.userservice.model.entity.User;
 import by.innowise.userservice.model.response.ListResponse;
 import by.innowise.userservice.repository.CardInfoRepository;
-import by.innowise.userservice.repository.UserRepository;
 import by.innowise.userservice.service.CardInfoService;
 import by.innowise.userservice.service.UserService;
 import by.innowise.userservice.util.CardInfoUtil;
@@ -59,7 +58,8 @@ public class CardInfoServiceImpl implements CardInfoService {
   @Transactional(readOnly = true)
   @Cacheable(key = "#id")
   public CardInfoDto getCardInfoById(UUID id) {
-    CardInfo cardInfo = repository.findCardInfoById(id);
+    CardInfo cardInfo = repository.findCardInfoById(id)
+        .orElseThrow(() -> new EntityNotFoundException("Card info not found with id: " + id));
     return mapper.toCardInfoDto(cardInfo);
   }
 
@@ -82,7 +82,8 @@ public class CardInfoServiceImpl implements CardInfoService {
       put = @CachePut(key = "#id")
   )
   public CardInfoDto patchCardInfo(UUID id, CardInfoPatchDto cardInfoPatchDto) {
-    CardInfo cardInfo = repository.findCardInfoById(id);
+    CardInfo cardInfo = repository.findCardInfoById(id)
+        .orElseThrow(() -> new EntityNotFoundException("Card info not found with id: " + id));
     cardInfo.patch(cardInfoPatchDto);
 
     Objects.requireNonNull(cacheManager.getCache(RedisConfig.USER_CACHE))
@@ -99,7 +100,8 @@ public class CardInfoServiceImpl implements CardInfoService {
       }
   )
   public CardInfoDto softDeleteCardInfo(UUID id) {
-    CardInfo cardInfo = repository.findCardInfoById(id);
+    CardInfo cardInfo = repository.findCardInfoById(id)
+        .orElseThrow(() -> new EntityNotFoundException("Card info not found with id: " + id));
     cardInfo.setDeleted(true);
 
     Objects.requireNonNull(cacheManager.getCache(RedisConfig.USER_CACHE))
@@ -116,7 +118,8 @@ public class CardInfoServiceImpl implements CardInfoService {
       }
   )
   public CardInfoDto hardDeleteCardInfo(UUID id) {
-    CardInfo cardInfo = repository.findCardInfoById(id);
+    CardInfo cardInfo = repository.findCardInfoById(id)
+        .orElseThrow(() -> new EntityNotFoundException("Card info not found with id: " + id));
     repository.deleteById(id);
 
     Objects.requireNonNull(cacheManager.getCache(RedisConfig.USER_CACHE))

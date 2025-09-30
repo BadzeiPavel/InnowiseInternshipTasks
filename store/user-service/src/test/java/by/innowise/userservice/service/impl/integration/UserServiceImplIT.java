@@ -8,7 +8,6 @@ import by.innowise.userservice.model.response.ListResponse;
 import by.innowise.userservice.repository.UserRepository;
 import by.innowise.userservice.service.UserService;
 import java.util.List;
-import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -64,7 +63,8 @@ class UserServiceImplIT {
   @Test
   void getUsersByIds_shouldReturnMultiple() {
     UserDto u1 = userService.createUser(TestDataFactory.createUserCreationDto("Jack", "Jackwho"));
-    UserDto u2 = userService.createUser(TestDataFactory.createUserCreationDto("Russel", "Russelwho"));
+    UserDto u2 = userService.createUser(
+        TestDataFactory.createUserCreationDto("Russel", "Russelwho"));
 
     ListResponse<UserDto> response = userService.getUsersByIds(List.of(u1.getId(), u2.getId()));
 

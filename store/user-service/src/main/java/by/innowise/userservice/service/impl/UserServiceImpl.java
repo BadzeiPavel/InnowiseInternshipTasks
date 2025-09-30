@@ -1,6 +1,7 @@
 package by.innowise.userservice.service.impl;
 
 import by.innowise.userservice.config.cache.RedisConfig;
+import by.innowise.userservice.exception.EntityNotFoundException;
 import by.innowise.userservice.mapper.UserMapper;
 import by.innowise.userservice.model.dto.UserCreationDto;
 import by.innowise.userservice.model.dto.UserDto;
@@ -47,7 +48,8 @@ public class UserServiceImpl implements UserService {
   @Transactional(readOnly = true)
   @Cacheable(key = "#id")
   public UserDto getUserById(UUID id) {
-    User user = repository.findUserById(id);
+    User user = repository.findUserById(id)
+        .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
 
     return mapper.toUserDto(user);
   }
@@ -69,7 +71,8 @@ public class UserServiceImpl implements UserService {
   @Transactional(readOnly = true)
   @Cacheable(key = "#email")
   public UserDto getUserByEmail(String email) {
-    User user = repository.getByEmail(email);
+    User user = repository.getByEmail(email)
+        .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
 
     return mapper.toUserDto(user);
   }
@@ -81,7 +84,8 @@ public class UserServiceImpl implements UserService {
       evict = @CacheEvict(key = "#result.email", condition = "#result.email != null")
   )
   public UserDto updateUser(UUID id, UserDto userDto) {
-    User user = repository.findUserById(id);
+    User user = repository.findUserById(id)
+        .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
 
     String oldEmail = user.getEmail();
 
@@ -102,7 +106,8 @@ public class UserServiceImpl implements UserService {
       evict = @CacheEvict(key = "#result.email", condition = "#result.email != null")
   )
   public UserDto patchUser(UUID id, UserPatchDto patchDto) {
-    User user = repository.findUserById(id);
+    User user = repository.findUserById(id)
+        .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
 
     String oldEmail = user.getEmail();
 
@@ -125,7 +130,8 @@ public class UserServiceImpl implements UserService {
       }
   )
   public UserDto softDeleteUser(UUID id) {
-    User user = repository.findUserById(id);
+    User user = repository.findUserById(id)
+        .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
     user.setDeleted(true);
 
     return mapper.toUserDto(user);
@@ -140,7 +146,8 @@ public class UserServiceImpl implements UserService {
       }
   )
   public UserDto hardDeleteUser(UUID id) {
-    User user = repository.findUserById(id);
+    User user = repository.findUserById(id)
+        .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
     Set<CardInfo> cardInfos = user.getCardInfos();
 
     if (cardInfos != null) {

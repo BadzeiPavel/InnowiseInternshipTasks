@@ -8,16 +8,17 @@ import lombok.Data;
 
 @Data
 public class UserPatchDto {
-    @Size(min = 2, max = 50, message = "Name must be from 2 to 50 characters")
-    private String name;
 
-    @Size(min = 2, max = 50, message = "Surname must be from 2 to 50 characters")
-    private String surname;
+  @Size(min = 2, max = 50, message = "Name must be from 2 to 50 characters")
+  private String name;
 
-    @Past
-    private LocalDate birthDate;
+  @Size(min = 2, max = 50, message = "Surname must be from 2 to 50 characters")
+  private String surname;
 
-    @Email
-    @Size(min = 5, max = 100, message = "Email must be from 5 to 100 characters")
-    private String email;
+  @Past
+  private LocalDate birthDate;
+
+  @Email
+  @Size(min = 5, max = 100, message = "Email must be from 5 to 100 characters")
+  private String email;
 }

@@ -1,6 +1,5 @@
 package by.innowise.userservice.repository;
 
-import by.innowise.userservice.exception.EntityNotFoundException;
 import by.innowise.userservice.model.entity.CardInfo;
 import java.util.List;
 import java.util.Optional;
@@ -25,8 +24,7 @@ public interface CardInfoRepository extends JpaRepository<CardInfo, UUID> {
     return findAllByIdInAndDeletedFalse(ids);
   }
 
-  default CardInfo findCardInfoById(UUID id) {
-    return findByIdAndDeletedFalse(id)
-        .orElseThrow(() -> new EntityNotFoundException("Card info not found with id: " + id));
+  default Optional<CardInfo> findCardInfoById(UUID id) {
+    return findByIdAndDeletedFalse(id);
   }
 }

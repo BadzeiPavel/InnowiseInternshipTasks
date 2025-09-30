@@ -4,7 +4,6 @@ import by.innowise.userservice.model.dto.CardInfoDto;
 import by.innowise.userservice.model.dto.UserCreationDto;
 import by.innowise.userservice.model.dto.UserDto;
 import java.time.LocalDate;
-import java.util.Set;
 import java.util.UUID;
 
 public class TestDataFactory {
