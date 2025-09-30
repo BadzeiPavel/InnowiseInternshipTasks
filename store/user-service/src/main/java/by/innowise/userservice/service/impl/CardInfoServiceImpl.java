@@ -1,20 +1,21 @@
 package by.innowise.userservice.service.impl;
 
 import by.innowise.userservice.config.cache.RedisConfig;
-import by.innowise.userservice.mapper.DtoMapper;
-import by.innowise.userservice.mapper.EntityMapper;
+import by.innowise.userservice.mapper.CardInfoMapper;
+import by.innowise.userservice.mapper.UserMapper;
 import by.innowise.userservice.model.dto.CardInfoDto;
 import by.innowise.userservice.model.dto.CardInfoPatchDto;
+import by.innowise.userservice.model.dto.UserDto;
 import by.innowise.userservice.model.entity.CardInfo;
 import by.innowise.userservice.model.entity.User;
 import by.innowise.userservice.model.response.ListResponse;
 import by.innowise.userservice.repository.CardInfoRepository;
 import by.innowise.userservice.repository.UserRepository;
 import by.innowise.userservice.service.CardInfoService;
+import by.innowise.userservice.service.UserService;
 import by.innowise.userservice.util.CardInfoUtil;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.CacheManager;
@@ -31,11 +32,11 @@ import org.springframework.transaction.annotation.Transactional;
 @CacheConfig(cacheNames = RedisConfig.CARD_INFO_CACHE)
 public class CardInfoServiceImpl implements CardInfoService {
 
-  private final DtoMapper dtoMapper;
-  private final EntityMapper entityMapper;
   private final CardInfoRepository repository;
-  private final UserRepository userRepository;
+  private final UserService userService;
   private final CacheManager cacheManager;
+  private final CardInfoMapper mapper;
+  private final UserMapper userMapper;
 
   @Override
   @Transactional
@@ -44,14 +45,14 @@ public class CardInfoServiceImpl implements CardInfoService {
       evict = @CacheEvict(value = RedisConfig.USER_CACHE, key = "#userId")
   )
   public CardInfoDto createCardInfo(UUID userId, CardInfoDto cardInfoDto) {
-    CardInfo cardInfo = entityMapper.toCardInfo(cardInfoDto);
-    User user = userRepository.findUserById(userId);
+    CardInfo cardInfo = mapper.toCardInfo(cardInfoDto);
+    UserDto userDto = userService.getUserById(userId);
     String number = getUniqueCardNumber();
 
-    cardInfo.fillInOnCreate(number, user);
+    cardInfo.fillInOnCreate(number, userMapper.toUser(userDto));
 
     CardInfo saved = repository.save(cardInfo);
-    return dtoMapper.toCardInfoDto(saved);
+    return mapper.toCardInfoDto(saved);
   }
 
   @Override
@@ -59,15 +60,15 @@ public class CardInfoServiceImpl implements CardInfoService {
   @Cacheable(key = "#id")
   public CardInfoDto getCardInfoById(UUID id) {
     CardInfo cardInfo = repository.findCardInfoById(id);
-    return dtoMapper.toCardInfoDto(cardInfo);
+    return mapper.toCardInfoDto(cardInfo);
   }
 
   @Override
   @Transactional(readOnly = true)
-  @Cacheable(key = "'ids_' + #ids.hashCode()")
+//  @Cacheable(key = "'ids_' + #ids.hashCode()")
   public ListResponse<CardInfoDto> getCardInfosByIds(List<UUID> ids) {
     List<CardInfoDto> cardInfos = repository.findAllByIdIn(ids).stream()
-        .map(dtoMapper::toCardInfoDto)
+        .map(mapper::toCardInfoDto)
         .toList();
 
     return ListResponse.<CardInfoDto>builder()
@@ -87,7 +88,7 @@ public class CardInfoServiceImpl implements CardInfoService {
     Objects.requireNonNull(cacheManager.getCache(RedisConfig.USER_CACHE))
         .evict(cardInfo.getUser().getId());
 
-    return dtoMapper.toCardInfoDto(cardInfo);
+    return mapper.toCardInfoDto(cardInfo);
   }
 
   @Override
@@ -104,7 +105,7 @@ public class CardInfoServiceImpl implements CardInfoService {
     Objects.requireNonNull(cacheManager.getCache(RedisConfig.USER_CACHE))
         .evict(cardInfo.getUser().getId());
 
-    return dtoMapper.toCardInfoDto(cardInfo);
+    return mapper.toCardInfoDto(cardInfo);
   }
 
   @Override
@@ -121,10 +122,9 @@ public class CardInfoServiceImpl implements CardInfoService {
     Objects.requireNonNull(cacheManager.getCache(RedisConfig.USER_CACHE))
         .evict(cardInfo.getUser().getId());
 
-    return dtoMapper.toCardInfoDto(cardInfo);
+    return mapper.toCardInfoDto(cardInfo);
   }
 
-  @Transactional(readOnly = true)
   private String getUniqueCardNumber() {
     String cardNumber;
     int counter = 0;

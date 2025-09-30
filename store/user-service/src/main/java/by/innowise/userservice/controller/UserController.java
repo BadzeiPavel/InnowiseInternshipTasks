@@ -1,10 +1,12 @@
 package by.innowise.userservice.controller;
 
+import by.innowise.userservice.model.dto.UserCreationDto;
 import by.innowise.userservice.model.dto.UserDto;
 import by.innowise.userservice.model.dto.UserPatchDto;
 import by.innowise.userservice.model.request.GetByIdsRequest;
 import by.innowise.userservice.service.UserService;
 import jakarta.validation.Valid;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +31,8 @@ public class UserController {
   private final UserService userService;
 
   @PostMapping
-  public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto) {
-    UserDto createdUser = userService.createUser(userDto);
+  public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserCreationDto userCreationDto) {
+    UserDto createdUser = userService.createUser(userCreationDto);
 
     return ResponseEntity
         .status(HttpStatus.CREATED)
@@ -44,9 +46,8 @@ public class UserController {
 
   @GetMapping
   public ResponseEntity<?> getUsersByIds(
-      @RequestBody GetByIdsRequest getByIdsRequest,
+      @RequestParam(required = false) List<UUID> ids,
       @RequestParam(required = false) String email) {
-    Set<UUID> ids = getByIdsRequest.getIds();
 
     if (ids != null && !ids.isEmpty()) {
       return ResponseEntity.ok(userService.getUsersByIds(ids));

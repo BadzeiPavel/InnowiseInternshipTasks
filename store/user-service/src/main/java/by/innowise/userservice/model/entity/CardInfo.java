@@ -46,18 +46,12 @@ public class CardInfo {
   @JoinColumn(name = "user_id", nullable = false, unique = true)
   private User user;
 
-  @NotBlank(message = "Card number is mandatory")
-  @Size(min = 16, max = 16, message = "Card number must be 16 characters")
   @Column(name = "number", nullable = false, length = 20)
   private String number;
 
-  @NotBlank(message = "Card holder name is mandatory")
-  @Size(min = 4, max = 100, message = "Card holder name must be from 4 to 100 characters")
   @Column(name = "holder", nullable = false, length = 100)
   private String holder;
 
-  @NotNull(message = "Expiration date is mandatory")
-  @Future(message = "Expiration date must be in the future")
   @Column(name = "expiration_date", nullable = false)
   private LocalDate expirationDate;
 

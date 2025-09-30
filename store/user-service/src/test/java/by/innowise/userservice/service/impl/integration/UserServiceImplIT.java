@@ -1,11 +1,13 @@
 package by.innowise.userservice.service.impl.integration;
 
+import by.innowise.userservice.model.dto.UserCreationDto;
 import by.innowise.userservice.model.dto.UserDto;
 import by.innowise.userservice.model.dto.UserPatchDto;
 import by.innowise.userservice.model.entity.User;
 import by.innowise.userservice.model.response.ListResponse;
 import by.innowise.userservice.repository.UserRepository;
 import by.innowise.userservice.service.UserService;
+import java.util.List;
 import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.BeforeAll;
@@ -36,14 +38,14 @@ class UserServiceImplIT {
 
   @BeforeEach
   void setup() {
-    UserDto user = TestDataFactory.createUser("John", "Doe");
+    UserCreationDto user = TestDataFactory.createUserCreationDto("John", "Doe");
 
     baseUser = userService.createUser(user);
   }
 
   @Test
   void createUser_shouldPersistAndCache() {
-    UserDto dto = TestDataFactory.createUser("Alice", "Smith");
+    UserCreationDto dto = TestDataFactory.createUserCreationDto("Alice", "Smith");
 
     UserDto result = userService.createUser(dto);
 
@@ -61,10 +63,10 @@ class UserServiceImplIT {
 
   @Test
   void getUsersByIds_shouldReturnMultiple() {
-    UserDto u1 = userService.createUser(TestDataFactory.createUser("Jack", "Jackwho"));
-    UserDto u2 = userService.createUser(TestDataFactory.createUser("Russel", "Russelwho"));
+    UserDto u1 = userService.createUser(TestDataFactory.createUserCreationDto("Jack", "Jackwho"));
+    UserDto u2 = userService.createUser(TestDataFactory.createUserCreationDto("Russel", "Russelwho"));
 
-    ListResponse<UserDto> response = userService.getUsersByIds(Set.of(u1.getId(), u2.getId()));
+    ListResponse<UserDto> response = userService.getUsersByIds(List.of(u1.getId(), u2.getId()));
 
     assertThat(response.getItems()).hasSize(2);
     assertThat(response.getItems())

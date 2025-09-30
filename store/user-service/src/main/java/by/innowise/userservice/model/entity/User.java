@@ -10,11 +10,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Past;
-import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.Set;
@@ -42,24 +37,15 @@ public class User {
   @EqualsAndHashCode.Include
   private UUID id;
 
-  @NotBlank(message = "Name is mandatory")
-  @Size(min = 2, max = 50, message = "Name must be from 2 to 50 characters")
   @Column(name = "name", nullable = false, length = 50)
   private String name;
 
-  @NotBlank(message = "Surname is mandatory")
-  @Size(min = 2, max = 50, message = "Surname must be from 2 to 50 characters")
   @Column(name = "surname", nullable = false, length = 50)
   private String surname;
 
-  @NotNull(message = "Birth date is mandatory")
-  @Past(message = "Birth date must be in the past")
   @Column(name = "birth_date", nullable = false)
   private LocalDate birthDate;
 
-  @NotBlank(message = "Email is mandatory")
-  @Email(message = "Email should be valid")
-  @Size(min = 5, max = 100, message = "Email must be from 5 to 100 characters")
   @Column(name = "email", nullable = false, unique = true, length = 100)
   private String email;
 

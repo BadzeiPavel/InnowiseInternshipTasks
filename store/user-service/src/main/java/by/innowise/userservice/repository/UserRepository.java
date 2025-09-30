@@ -14,11 +14,11 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
   Optional<User> findByEmailAndDeletedFalse(String email);
 
-  List<User> findAllByIdInAndDeletedFalse(Set<UUID> ids);
+  List<User> findAllByIdInAndDeletedFalse(List<UUID> ids);
 
   Optional<User> findByIdAndDeletedFalse(UUID id);
 
-  default List<User> findAllByIdIn(Set<UUID> ids) {
+  default List<User> findAllByIdIn(List<UUID> ids) {
     return findAllByIdInAndDeletedFalse(ids);
   }
 

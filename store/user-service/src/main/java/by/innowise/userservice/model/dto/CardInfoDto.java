@@ -24,7 +24,7 @@ public class CardInfoDto {
   private String number;
 
   @NotBlank(message = "Holder name is mandatory")
-  @Size(min = 5, max = 100, message = "Holder name must be from 4 to 20 characters")
+  @Size(min = 5, max = 100, message = "Holder name must be from 5 to 100 characters")
   private String holder;
 
   private LocalDate expirationDate;

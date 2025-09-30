@@ -1,18 +1,20 @@
 package by.innowise.userservice.service;
 
+import by.innowise.userservice.model.dto.UserCreationDto;
 import by.innowise.userservice.model.dto.UserDto;
 import by.innowise.userservice.model.dto.UserPatchDto;
 import by.innowise.userservice.model.response.ListResponse;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 public interface UserService {
 
-  UserDto createUser(UserDto userDto);
+  UserDto createUser(UserCreationDto userCreationDto);
 
   UserDto getUserById(UUID id);
 
-  ListResponse<UserDto> getUsersByIds(Set<UUID> ids);
+  ListResponse<UserDto> getUsersByIds(List<UUID> ids);
 
   UserDto getUserByEmail(String email);
 

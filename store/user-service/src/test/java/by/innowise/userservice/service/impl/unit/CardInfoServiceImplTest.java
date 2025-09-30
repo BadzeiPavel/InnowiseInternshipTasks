@@ -1,8 +1,7 @@
 package by.innowise.userservice.service.impl.unit;
 
 import by.innowise.userservice.config.cache.RedisConfig;
-import by.innowise.userservice.mapper.DtoMapper;
-import by.innowise.userservice.mapper.EntityMapper;
+import by.innowise.userservice.mapper.CardInfoMapper;
 import by.innowise.userservice.model.dto.CardInfoDto;
 import by.innowise.userservice.model.dto.CardInfoPatchDto;
 import by.innowise.userservice.model.entity.CardInfo;
@@ -12,7 +11,6 @@ import by.innowise.userservice.repository.CardInfoRepository;
 import by.innowise.userservice.repository.UserRepository;
 import by.innowise.userservice.service.impl.CardInfoServiceImpl;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -32,10 +30,7 @@ import org.springframework.cache.CacheManager;
 class CardInfoServiceImplTest {
 
   @Mock
-  private DtoMapper dtoMapper;
-
-  @Mock
-  private EntityMapper entityMapper;
+  private CardInfoMapper mapper;
 
   @Mock
   private CardInfoRepository repository;
@@ -58,16 +53,16 @@ class CardInfoServiceImplTest {
     CardInfo savedEntity = new CardInfo();
     CardInfoDto outputDto = new CardInfoDto();
 
-    when(entityMapper.toCardInfo(inputDto)).thenReturn(entity);
+    when(mapper.toCardInfo(inputDto)).thenReturn(entity);
     when(userRepository.findUserById(userId)).thenReturn(user);
     when(repository.save(entity)).thenReturn(savedEntity);
-    when(dtoMapper.toCardInfoDto(savedEntity)).thenReturn(outputDto);
+    when(mapper.toCardInfoDto(savedEntity)).thenReturn(outputDto);
 
     CardInfoDto result = service.createCardInfo(userId, inputDto);
 
     assertEquals(outputDto, result);
     verify(repository).save(entity);
-    verify(dtoMapper).toCardInfoDto(savedEntity);
+    verify(mapper).toCardInfoDto(savedEntity);
   }
 
   @Test
@@ -77,7 +72,7 @@ class CardInfoServiceImplTest {
     CardInfoDto dto = new CardInfoDto();
 
     when(repository.findCardInfoById(id)).thenReturn(entity);
-    when(dtoMapper.toCardInfoDto(entity)).thenReturn(dto);
+    when(mapper.toCardInfoDto(entity)).thenReturn(dto);
 
     CardInfoDto result = service.getCardInfoById(id);
 
@@ -97,8 +92,8 @@ class CardInfoServiceImplTest {
     CardInfoDto dto2 = new CardInfoDto();
 
     when(repository.findAllByIdIn(ids)).thenReturn(List.of(entity1, entity2));
-    when(dtoMapper.toCardInfoDto(entity1)).thenReturn(dto1);
-    when(dtoMapper.toCardInfoDto(entity2)).thenReturn(dto2);
+    when(mapper.toCardInfoDto(entity1)).thenReturn(dto1);
+    when(mapper.toCardInfoDto(entity2)).thenReturn(dto2);
 
     ListResponse<CardInfoDto> response = service.getCardInfosByIds(ids);
 
@@ -121,7 +116,7 @@ class CardInfoServiceImplTest {
 
     Cache cache = mock(Cache.class);
     when(repository.findCardInfoById(id)).thenReturn(cardInfo);
-    when(dtoMapper.toCardInfoDto(cardInfo)).thenReturn(dto);
+    when(mapper.toCardInfoDto(cardInfo)).thenReturn(dto);
     when(cacheManager.getCache(RedisConfig.USER_CACHE)).thenReturn(cache);
 
     CardInfoDto result = service.patchCardInfo(id, patchDto);
@@ -142,7 +137,7 @@ class CardInfoServiceImplTest {
 
     Cache cache = mock(Cache.class);
     when(repository.findCardInfoById(id)).thenReturn(cardInfo);
-    when(dtoMapper.toCardInfoDto(cardInfo)).thenReturn(dto);
+    when(mapper.toCardInfoDto(cardInfo)).thenReturn(dto);
     when(cacheManager.getCache(RedisConfig.USER_CACHE)).thenReturn(cache);
 
     CardInfoDto result = service.softDeleteCardInfo(id);
@@ -164,7 +159,7 @@ class CardInfoServiceImplTest {
     Cache cache = mock(Cache.class);
     when(repository.findCardInfoById(id)).thenReturn(cardInfo);
     when(cacheManager.getCache(RedisConfig.USER_CACHE)).thenReturn(cache);
-    when(dtoMapper.toCardInfoDto(cardInfo)).thenReturn(dto);
+    when(mapper.toCardInfoDto(cardInfo)).thenReturn(dto);
 
     CardInfoDto result = service.hardDeleteCardInfo(id);
 

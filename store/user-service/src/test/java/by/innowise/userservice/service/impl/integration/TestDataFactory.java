@@ -1,6 +1,7 @@
 package by.innowise.userservice.service.impl.integration;
 
 import by.innowise.userservice.model.dto.CardInfoDto;
+import by.innowise.userservice.model.dto.UserCreationDto;
 import by.innowise.userservice.model.dto.UserDto;
 import java.time.LocalDate;
 import java.util.Set;
@@ -15,6 +16,15 @@ public class TestDataFactory {
     user.setBirthDate(LocalDate.now().minusYears(20));
     user.setEmail(name.toLowerCase() + "@email.com");
     user.setDeleted(false);
+    return user;
+  }
+
+  public static UserCreationDto createUserCreationDto(String name, String surname) {
+    UserCreationDto user = new UserCreationDto();
+    user.setName(name);
+    user.setSurname(surname);
+    user.setBirthDate(LocalDate.now().minusYears(20));
+    user.setEmail(name.toLowerCase() + "@email.com");
     return user;
   }
 

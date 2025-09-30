@@ -1,8 +1,8 @@
 package by.innowise.userservice.service.impl.unit;
 
 import by.innowise.userservice.config.cache.RedisConfig;
-import by.innowise.userservice.mapper.DtoMapper;
-import by.innowise.userservice.mapper.EntityMapper;
+import by.innowise.userservice.mapper.UserMapper;
+import by.innowise.userservice.model.dto.UserCreationDto;
 import by.innowise.userservice.model.dto.UserDto;
 import by.innowise.userservice.model.dto.UserPatchDto;
 import by.innowise.userservice.model.entity.CardInfo;
@@ -32,10 +32,7 @@ import org.springframework.cache.CacheManager;
 class UserServiceImplTest {
 
   @Mock
-  private DtoMapper dtoMapper;
-
-  @Mock
-  private EntityMapper entityMapper;
+  private UserMapper mapper;
 
   @Mock
   private UserRepository repository;
@@ -48,20 +45,20 @@ class UserServiceImplTest {
 
   @Test
   void createUser_shouldSaveAndReturnDto() {
-    UserDto inputDto = new UserDto();
+    UserCreationDto inputDto = new UserCreationDto();
     User entity = new User();
     User savedEntity = new User();
     UserDto outputDto = new UserDto();
 
-    when(entityMapper.toUser(inputDto)).thenReturn(entity);
+    when(mapper.toUser(inputDto)).thenReturn(entity);
     when(repository.save(entity)).thenReturn(savedEntity);
-    when(dtoMapper.toUserDto(savedEntity)).thenReturn(outputDto);
+    when(mapper.toUserDto(savedEntity)).thenReturn(outputDto);
 
     UserDto result = service.createUser(inputDto);
 
     assertEquals(outputDto, result);
     verify(repository).save(entity);
-    verify(dtoMapper).toUserDto(savedEntity);
+    verify(mapper).toUserDto(savedEntity);
   }
 
   @Test
@@ -71,7 +68,7 @@ class UserServiceImplTest {
     UserDto dto = new UserDto();
 
     when(repository.findUserById(id)).thenReturn(entity);
-    when(dtoMapper.toUserDto(entity)).thenReturn(dto);
+    when(mapper.toUserDto(entity)).thenReturn(dto);
 
     UserDto result = service.getUserById(id);
 
@@ -83,7 +80,7 @@ class UserServiceImplTest {
   void getUsersByIds_shouldReturnListResponse() {
     UUID id1 = UUID.randomUUID();
     UUID id2 = UUID.randomUUID();
-    Set<UUID> ids = Set.of(id1, id2);
+    List<UUID> ids = List.of(id1, id2);
 
     User entity1 = new User();
     User entity2 = new User();
@@ -91,8 +88,8 @@ class UserServiceImplTest {
     UserDto dto2 = new UserDto();
 
     when(repository.findAllByIdIn(ids)).thenReturn(List.of(entity1, entity2));
-    when(dtoMapper.toUserDto(entity1)).thenReturn(dto1);
-    when(dtoMapper.toUserDto(entity2)).thenReturn(dto2);
+    when(mapper.toUserDto(entity1)).thenReturn(dto1);
+    when(mapper.toUserDto(entity2)).thenReturn(dto2);
 
     ListResponse<UserDto> response = service.getUsersByIds(ids);
 
@@ -108,7 +105,7 @@ class UserServiceImplTest {
     UserDto dto = new UserDto();
 
     when(repository.getByEmail(email)).thenReturn(entity);
-    when(dtoMapper.toUserDto(entity)).thenReturn(dto);
+    when(mapper.toUserDto(entity)).thenReturn(dto);
 
     UserDto result = service.getUserByEmail(email);
 
@@ -127,7 +124,7 @@ class UserServiceImplTest {
 
     when(repository.findUserById(id)).thenReturn(entity);
     when(entity.getEmail()).thenReturn("old@example.com");
-    when(dtoMapper.toUserDto(entity)).thenReturn(outputDto);
+    when(mapper.toUserDto(entity)).thenReturn(outputDto);
 
     Cache cache = mock(Cache.class);
     when(cacheManager.getCache(RedisConfig.USER_CACHE)).thenReturn(cache);
@@ -149,7 +146,7 @@ class UserServiceImplTest {
 
     when(repository.findUserById(id)).thenReturn(entity);
     when(entity.getEmail()).thenReturn("old@example.com");
-    when(dtoMapper.toUserDto(entity)).thenReturn(outputDto);
+    when(mapper.toUserDto(entity)).thenReturn(outputDto);
 
     Cache cache = mock(Cache.class);
     when(cacheManager.getCache(RedisConfig.USER_CACHE)).thenReturn(cache);
@@ -169,7 +166,7 @@ class UserServiceImplTest {
     UserDto dto = new UserDto();
 
     when(repository.findUserById(id)).thenReturn(entity);
-    when(dtoMapper.toUserDto(entity)).thenReturn(dto);
+    when(mapper.toUserDto(entity)).thenReturn(dto);
 
     UserDto result = service.softDeleteUser(id);
 
@@ -196,7 +193,7 @@ class UserServiceImplTest {
 
     Cache cardCache = mock(Cache.class);
     when(repository.findUserById(id)).thenReturn(entity);
-    when(dtoMapper.toUserDto(entity)).thenReturn(dto);
+    when(mapper.toUserDto(entity)).thenReturn(dto);
     when(cacheManager.getCache(RedisConfig.CARD_INFO_CACHE)).thenReturn(cardCache);
 
     UserDto result = service.hardDeleteUser(id);

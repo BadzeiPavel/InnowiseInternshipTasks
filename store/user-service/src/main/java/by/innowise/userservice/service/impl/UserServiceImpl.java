@@ -1,9 +1,8 @@
 package by.innowise.userservice.service.impl;
 
 import by.innowise.userservice.config.cache.RedisConfig;
-import by.innowise.userservice.mapper.DtoMapper;
-import by.innowise.userservice.mapper.EntityMapper;
-import by.innowise.userservice.model.dto.CardInfoDto;
+import by.innowise.userservice.mapper.UserMapper;
+import by.innowise.userservice.model.dto.UserCreationDto;
 import by.innowise.userservice.model.dto.UserDto;
 import by.innowise.userservice.model.dto.UserPatchDto;
 import by.innowise.userservice.model.entity.CardInfo;
@@ -30,19 +29,18 @@ import org.springframework.transaction.annotation.Transactional;
 @CacheConfig(cacheNames = RedisConfig.USER_CACHE)
 public class UserServiceImpl implements UserService {
 
-  private final DtoMapper dtoMapper;
-  private final EntityMapper entityMapper;
+  private final UserMapper mapper;
   private final UserRepository repository;
   private final CacheManager cacheManager;
 
   @Override
   @Transactional
   @CachePut(key = "#result.id")
-  public UserDto createUser(UserDto userDto) {
-    User user = entityMapper.toUser(userDto);
+  public UserDto createUser(UserCreationDto userCreationDto) {
+    User user = mapper.toUser(userCreationDto);
     User savedUser = repository.save(user);
 
-    return dtoMapper.toUserDto(savedUser);
+    return mapper.toUserDto(savedUser);
   }
 
   @Override
@@ -51,15 +49,15 @@ public class UserServiceImpl implements UserService {
   public UserDto getUserById(UUID id) {
     User user = repository.findUserById(id);
 
-    return dtoMapper.toUserDto(user);
+    return mapper.toUserDto(user);
   }
 
   @Override
   @Transactional(readOnly = true)
-  @Cacheable(key = "'ids_' + #ids.hashCode()")
-  public ListResponse<UserDto> getUsersByIds(Set<UUID> ids) {
+//  @Cacheable(key = "'ids_' + #ids.hashCode()")
+  public ListResponse<UserDto> getUsersByIds(List<UUID> ids) {
     List<UserDto> users = repository.findAllByIdIn(ids).stream()
-        .map(dtoMapper::toUserDto)
+        .map(mapper::toUserDto)
         .toList();
 
     return ListResponse.<UserDto>builder()
@@ -73,7 +71,7 @@ public class UserServiceImpl implements UserService {
   public UserDto getUserByEmail(String email) {
     User user = repository.getByEmail(email);
 
-    return dtoMapper.toUserDto(user);
+    return mapper.toUserDto(user);
   }
 
   @Override
@@ -88,7 +86,7 @@ public class UserServiceImpl implements UserService {
     String oldEmail = user.getEmail();
 
     user.update(userDto);
-    UserDto updated = dtoMapper.toUserDto(user);
+    UserDto updated = mapper.toUserDto(user);
 
     if (!oldEmail.equals(updated.getEmail())) {
       Objects.requireNonNull(cacheManager.getCache(RedisConfig.USER_CACHE)).evict(oldEmail);
@@ -109,7 +107,7 @@ public class UserServiceImpl implements UserService {
     String oldEmail = user.getEmail();
 
     user.patch(patchDto);
-    UserDto updated = dtoMapper.toUserDto(user);
+    UserDto updated = mapper.toUserDto(user);
 
     if (!oldEmail.equals(updated.getEmail())) {
       Objects.requireNonNull(cacheManager.getCache(RedisConfig.USER_CACHE)).evict(oldEmail);
@@ -130,7 +128,7 @@ public class UserServiceImpl implements UserService {
     User user = repository.findUserById(id);
     user.setDeleted(true);
 
-    return dtoMapper.toUserDto(user);
+    return mapper.toUserDto(user);
   }
 
   @Override
@@ -154,6 +152,6 @@ public class UserServiceImpl implements UserService {
 
     repository.deleteById(id);
 
-    return dtoMapper.toUserDto(user);
+    return mapper.toUserDto(user);
   }
 }

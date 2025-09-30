@@ -1,6 +1,7 @@
 package by.innowise.userservice.mapper;
 
 import by.innowise.userservice.model.dto.CardInfoDto;
+import by.innowise.userservice.model.dto.UserCreationDto;
 import by.innowise.userservice.model.dto.UserDto;
 import by.innowise.userservice.model.entity.CardInfo;
 import by.innowise.userservice.model.entity.User;
@@ -11,9 +12,11 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
-public interface EntityMapper {
-  User toUser(UserDto userDto);
+public interface CardInfoMapper {
 
-  @Mapping(source = "userDto", target = "user")
+  @Mapping(target = "userDto", ignore = true)
+  CardInfoDto toCardInfoDto(CardInfo cardInfo);
+
+  @Mapping(target = "user", ignore = true)
   CardInfo toCardInfo(CardInfoDto cardInfoDto);
 }
