@@ -38,12 +38,11 @@ public class CardInfo {
   private UUID id;
 
   @ToString.Exclude
-  @NotNull(message = "User is mandatory")
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "user_id", nullable = false, unique = true)
+  @JoinColumn(name = "user_id", nullable = false)
   private User user;
 
-  @Column(name = "number", nullable = false, length = 20)
+  @Column(name = "number", nullable = false, length = 16)
   private String number;
 
   @Column(name = "holder", nullable = false, length = 100)

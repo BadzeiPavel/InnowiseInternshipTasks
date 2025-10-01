@@ -33,48 +33,48 @@ import org.springframework.cache.CacheManager;
 class UserServiceImplTest {
 
   @Mock
-  private UserMapper mapper;
+  private UserMapper userMapper;
 
   @Mock
-  private UserRepository repository;
+  private UserRepository userRepository;
 
   @Mock
   private CacheManager cacheManager;
 
   @InjectMocks
-  private UserServiceImpl service;
+  private UserServiceImpl userService;
 
   @Test
   void createUser_shouldSaveAndReturnDto() {
     UserCreationDto inputDto = new UserCreationDto();
     User entity = new User();
     User savedEntity = new User();
-    UserDto outputDto = new UserDto();
+    UserDto outputDto = UserDto.builder().build();
 
-    when(mapper.toUser(inputDto)).thenReturn(entity);
-    when(repository.save(entity)).thenReturn(savedEntity);
-    when(mapper.toUserDto(savedEntity)).thenReturn(outputDto);
+    when(userMapper.toUser(inputDto)).thenReturn(entity);
+    when(userRepository.save(entity)).thenReturn(savedEntity);
+    when(userMapper.toUserDto(savedEntity)).thenReturn(outputDto);
 
-    UserDto result = service.createUser(inputDto);
+    UserDto result = userService.createUser(inputDto);
 
     assertEquals(outputDto, result);
-    verify(repository).save(entity);
-    verify(mapper).toUserDto(savedEntity);
+    verify(userRepository).save(entity);
+    verify(userMapper).toUserDto(savedEntity);
   }
 
   @Test
   void getUserById_shouldReturnDto() {
     UUID id = UUID.randomUUID();
     User entity = new User();
-    UserDto dto = new UserDto();
+    UserDto dto = UserDto.builder().build();
 
-    when(repository.findUserById(id)).thenReturn(Optional.of(entity));
-    when(mapper.toUserDto(entity)).thenReturn(dto);
+    when(userRepository.findUserById(id)).thenReturn(Optional.of(entity));
+    when(userMapper.toUserDto(entity)).thenReturn(dto);
 
-    UserDto result = service.getUserById(id);
+    UserDto result = userService.getUserById(id);
 
     assertEquals(dto, result);
-    verify(repository).findUserById(id);
+    verify(userRepository).findUserById(id);
   }
 
   @Test
@@ -85,14 +85,14 @@ class UserServiceImplTest {
 
     User entity1 = new User();
     User entity2 = new User();
-    UserDto dto1 = new UserDto();
-    UserDto dto2 = new UserDto();
+    UserDto dto1 = UserDto.builder().build();
+    UserDto dto2 = UserDto.builder().build();
 
-    when(repository.findAllByIdIn(ids)).thenReturn(List.of(entity1, entity2));
-    when(mapper.toUserDto(entity1)).thenReturn(dto1);
-    when(mapper.toUserDto(entity2)).thenReturn(dto2);
+    when(userRepository.findAllByIdIn(ids)).thenReturn(List.of(entity1, entity2));
+    when(userMapper.toUserDto(entity1)).thenReturn(dto1);
+    when(userMapper.toUserDto(entity2)).thenReturn(dto2);
 
-    ListResponse<UserDto> response = service.getUsersByIds(ids);
+    ListResponse<UserDto> response = userService.getUsersByIds(ids);
 
     assertNotNull(response);
     assertEquals(2, response.getItems().size());
@@ -103,34 +103,34 @@ class UserServiceImplTest {
   void getUserByEmail_shouldReturnDto() {
     String email = "test@example.com";
     User entity = new User();
-    UserDto dto = new UserDto();
+    UserDto dto = UserDto.builder().build();
 
-    when(repository.getByEmail(email)).thenReturn(Optional.of(entity));
-    when(mapper.toUserDto(entity)).thenReturn(dto);
+    when(userRepository.getByEmail(email)).thenReturn(Optional.of(entity));
+    when(userMapper.toUserDto(entity)).thenReturn(dto);
 
-    UserDto result = service.getUserByEmail(email);
+    UserDto result = userService.getUserByEmail(email);
 
     assertEquals(dto, result);
-    verify(repository).getByEmail(email);
+    verify(userRepository).getByEmail(email);
   }
 
   @Test
   void updateUser_shouldUpdateAndEvictOldEmailCache() {
     UUID id = UUID.randomUUID();
     User entity = mock(User.class);
-    UserDto inputDto = new UserDto();
+    UserDto inputDto = UserDto.builder().build();
     inputDto.setEmail("new@example.com");
-    UserDto outputDto = new UserDto();
+    UserDto outputDto = UserDto.builder().build();
     outputDto.setEmail("new@example.com");
 
-    when(repository.findUserById(id)).thenReturn(Optional.ofNullable(entity));
+    when(userRepository.findUserById(id)).thenReturn(Optional.ofNullable(entity));
     when(entity.getEmail()).thenReturn("old@example.com");
-    when(mapper.toUserDto(entity)).thenReturn(outputDto);
+    when(userMapper.toUserDto(entity)).thenReturn(outputDto);
 
     Cache cache = mock(Cache.class);
     when(cacheManager.getCache(RedisConfig.USER_CACHE)).thenReturn(cache);
 
-    UserDto result = service.updateUser(id, inputDto);
+    UserDto result = userService.updateUser(id, inputDto);
 
     assertEquals(outputDto, result);
     verify(entity).update(inputDto);
@@ -142,17 +142,17 @@ class UserServiceImplTest {
     UUID id = UUID.randomUUID();
     User entity = mock(User.class);
     UserPatchDto patchDto = new UserPatchDto();
-    UserDto outputDto = new UserDto();
+    UserDto outputDto = UserDto.builder().build();
     outputDto.setEmail("new@example.com");
 
-    when(repository.findUserById(id)).thenReturn(Optional.ofNullable(entity));
+    when(userRepository.findUserById(id)).thenReturn(Optional.ofNullable(entity));
     when(entity.getEmail()).thenReturn("old@example.com");
-    when(mapper.toUserDto(entity)).thenReturn(outputDto);
+    when(userMapper.toUserDto(entity)).thenReturn(outputDto);
 
     Cache cache = mock(Cache.class);
     when(cacheManager.getCache(RedisConfig.USER_CACHE)).thenReturn(cache);
 
-    UserDto result = service.patchUser(id, patchDto);
+    UserDto result = userService.patchUser(id, patchDto);
 
     assertEquals(outputDto, result);
     verify(entity).patch(patchDto);
@@ -164,12 +164,12 @@ class UserServiceImplTest {
     UUID id = UUID.randomUUID();
     User entity = new User();
     entity.setDeleted(false);
-    UserDto dto = new UserDto();
+    UserDto dto = UserDto.builder().build();
 
-    when(repository.findUserById(id)).thenReturn(Optional.of(entity));
-    when(mapper.toUserDto(entity)).thenReturn(dto);
+    when(userRepository.findUserById(id)).thenReturn(Optional.of(entity));
+    when(userMapper.toUserDto(entity)).thenReturn(dto);
 
-    UserDto result = service.softDeleteUser(id);
+    UserDto result = userService.softDeleteUser(id);
 
     assertTrue(entity.isDeleted());
     assertEquals(dto, result);
@@ -190,16 +190,16 @@ class UserServiceImplTest {
     cards.add(card2);
     entity.setCardInfos(cards);
 
-    UserDto dto = new UserDto();
+    UserDto dto = UserDto.builder().build();
 
     Cache cardCache = mock(Cache.class);
-    when(repository.findUserById(id)).thenReturn(Optional.of(entity));
-    when(mapper.toUserDto(entity)).thenReturn(dto);
+    when(userRepository.findUserById(id)).thenReturn(Optional.of(entity));
+    when(userMapper.toUserDto(entity)).thenReturn(dto);
     when(cacheManager.getCache(RedisConfig.CARD_INFO_CACHE)).thenReturn(cardCache);
 
-    UserDto result = service.hardDeleteUser(id);
+    UserDto result = userService.hardDeleteUser(id);
 
-    verify(repository).deleteById(id);
+    verify(userRepository).deleteById(id);
     verify(cardCache).evict(card1.getId());
     verify(cardCache).evict(card2.getId());
     assertEquals(dto, result);

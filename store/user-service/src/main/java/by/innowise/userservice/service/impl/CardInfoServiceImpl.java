@@ -31,7 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 @CacheConfig(cacheNames = RedisConfig.CARD_INFO_CACHE)
 public class CardInfoServiceImpl implements CardInfoService {
 
-  private final CardInfoRepository repository;
+  private final CardInfoRepository cardInfoRepository;
   private final UserService userService;
   private final CacheManager cacheManager;
   private final CardInfoMapper mapper;
@@ -50,7 +50,7 @@ public class CardInfoServiceImpl implements CardInfoService {
 
     cardInfo.fillInOnCreate(number, userMapper.toUser(userDto));
 
-    CardInfo saved = repository.save(cardInfo);
+    CardInfo saved = cardInfoRepository.save(cardInfo);
     return mapper.toCardInfoDto(saved);
   }
 
@@ -58,8 +58,7 @@ public class CardInfoServiceImpl implements CardInfoService {
   @Transactional(readOnly = true)
   @Cacheable(key = "#id")
   public CardInfoDto getCardInfoById(UUID id) {
-    CardInfo cardInfo = repository.findCardInfoById(id)
-        .orElseThrow(() -> new EntityNotFoundException("Card info not found with id: " + id));
+    CardInfo cardInfo = findCardInfoById(id);
     return mapper.toCardInfoDto(cardInfo);
   }
 
@@ -67,7 +66,7 @@ public class CardInfoServiceImpl implements CardInfoService {
   @Transactional(readOnly = true)
 //  @Cacheable(key = "'ids_' + #ids.hashCode()")
   public ListResponse<CardInfoDto> getCardInfosByIds(List<UUID> ids) {
-    List<CardInfoDto> cardInfos = repository.findAllByIdIn(ids).stream()
+    List<CardInfoDto> cardInfos = cardInfoRepository.findAllByIdIn(ids).stream()
         .map(mapper::toCardInfoDto)
         .toList();
 
@@ -82,8 +81,7 @@ public class CardInfoServiceImpl implements CardInfoService {
       put = @CachePut(key = "#id")
   )
   public CardInfoDto patchCardInfo(UUID id, CardInfoPatchDto cardInfoPatchDto) {
-    CardInfo cardInfo = repository.findCardInfoById(id)
-        .orElseThrow(() -> new EntityNotFoundException("Card info not found with id: " + id));
+    CardInfo cardInfo = findCardInfoById(id);
     cardInfo.patch(cardInfoPatchDto);
 
     Objects.requireNonNull(cacheManager.getCache(RedisConfig.USER_CACHE))
@@ -100,8 +98,7 @@ public class CardInfoServiceImpl implements CardInfoService {
       }
   )
   public CardInfoDto softDeleteCardInfo(UUID id) {
-    CardInfo cardInfo = repository.findCardInfoById(id)
-        .orElseThrow(() -> new EntityNotFoundException("Card info not found with id: " + id));
+    CardInfo cardInfo = findCardInfoById(id);
     cardInfo.setDeleted(true);
 
     Objects.requireNonNull(cacheManager.getCache(RedisConfig.USER_CACHE))
@@ -118,14 +115,18 @@ public class CardInfoServiceImpl implements CardInfoService {
       }
   )
   public CardInfoDto hardDeleteCardInfo(UUID id) {
-    CardInfo cardInfo = repository.findCardInfoById(id)
-        .orElseThrow(() -> new EntityNotFoundException("Card info not found with id: " + id));
-    repository.deleteById(id);
+    CardInfo cardInfo = findCardInfoById(id);
+    cardInfoRepository.deleteById(id);
 
     Objects.requireNonNull(cacheManager.getCache(RedisConfig.USER_CACHE))
         .evict(cardInfo.getUser().getId());
 
     return mapper.toCardInfoDto(cardInfo);
+  }
+
+  private CardInfo findCardInfoById(UUID id) {
+    return cardInfoRepository.findCardInfoById(id)
+        .orElseThrow(() -> new EntityNotFoundException("Card info not found with id: " + id));
   }
 
   private String getUniqueCardNumber() {
@@ -135,7 +136,7 @@ public class CardInfoServiceImpl implements CardInfoService {
     do {
       ++counter;
       cardNumber = CardInfoUtil.generateCardNumber();
-    } while (repository.existsByNumber(cardNumber) && counter < CardInfoUtil.ATTEMPTS);
+    } while (cardInfoRepository.existsByNumber(cardNumber) && counter < CardInfoUtil.ATTEMPTS);
 
     return cardNumber;
   }

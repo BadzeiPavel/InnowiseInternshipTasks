@@ -12,11 +12,10 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 public class CardInfoDto {
 
-  private UUID id;
+  private final UUID id;
 
   @JsonIgnore
   private UserDto userDto;

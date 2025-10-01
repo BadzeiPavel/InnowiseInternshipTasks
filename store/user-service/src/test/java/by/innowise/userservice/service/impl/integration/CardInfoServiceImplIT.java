@@ -55,8 +55,9 @@ class CardInfoServiceImplIT {
 
   @Test
   void createCardInfo_shouldPersistAndCache() {
-    CardInfoDto dto = new CardInfoDto();
-    dto.setHolder("Alice");
+    CardInfoDto dto = CardInfoDto.builder()
+        .holder("Alice")
+        .build();
 
     CardInfoDto result = cardInfoService.createCardInfo(savedUser.getId(), dto);
 
@@ -66,8 +67,9 @@ class CardInfoServiceImplIT {
 
   @Test
   void getCardInfoById_shouldReturnFromDbAndCache() {
-    CardInfoDto dto = new CardInfoDto();
-    dto.setHolder("Jack");
+    CardInfoDto dto = CardInfoDto.builder()
+        .holder("Jack")
+        .build();
     CardInfoDto created = cardInfoService.createCardInfo(savedUser.getId(), dto);
 
     CardInfoDto found = cardInfoService.getCardInfoById(created.getId());

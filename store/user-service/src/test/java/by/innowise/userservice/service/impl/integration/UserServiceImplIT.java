@@ -3,12 +3,13 @@ package by.innowise.userservice.service.impl.integration;
 import by.innowise.userservice.model.dto.UserCreationDto;
 import by.innowise.userservice.model.dto.UserDto;
 import by.innowise.userservice.model.dto.UserPatchDto;
-import by.innowise.userservice.model.entity.User;
 import by.innowise.userservice.model.response.ListResponse;
 import by.innowise.userservice.repository.UserRepository;
 import by.innowise.userservice.service.UserService;
 import java.util.List;
+import java.util.NoSuchElementException;
 import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -105,11 +106,11 @@ class UserServiceImplIT {
 
   @Test
   void softDeleteUser_shouldMarkDeleted() {
-    UserDto deleted = userService.softDeleteUser(baseUser.getId());
+    userService.softDeleteUser(baseUser.getId());
 
-    assertThat(deleted.isDeleted()).isTrue();
-    User entity = userRepository.findById(baseUser.getId()).orElseThrow();
-    assertThat(entity.isDeleted()).isTrue();
+    Assertions.assertThrows(
+        NoSuchElementException.class,
+        () -> userRepository.findUserById(baseUser.getId()).orElseThrow());
   }
 
   @Test

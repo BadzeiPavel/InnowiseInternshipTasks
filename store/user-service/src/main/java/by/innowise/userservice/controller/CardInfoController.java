@@ -5,6 +5,7 @@ import by.innowise.userservice.model.dto.CardInfoPatchDto;
 import by.innowise.userservice.model.response.ListResponse;
 import by.innowise.userservice.service.CardInfoService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +45,8 @@ public class CardInfoController {
   }
 
   @GetMapping
-  public ResponseEntity<ListResponse<CardInfoDto>> getCardsByIds(@RequestParam List<UUID> ids) {
+  public ResponseEntity<ListResponse<CardInfoDto>> getCardsByIds(
+      @NotNull @RequestParam List<UUID> ids) {
     return ResponseEntity.ok(cardInfoService.getCardInfosByIds(ids));
   }
 

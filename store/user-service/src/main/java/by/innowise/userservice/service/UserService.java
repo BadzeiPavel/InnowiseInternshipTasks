@@ -5,7 +5,6 @@ import by.innowise.userservice.model.dto.UserDto;
 import by.innowise.userservice.model.dto.UserPatchDto;
 import by.innowise.userservice.model.response.ListResponse;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 public interface UserService {

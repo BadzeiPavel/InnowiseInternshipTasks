@@ -16,11 +16,10 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 public class UserDto {
 
-  private UUID id;
+  private final UUID id;
 
   @NotBlank(message = "Name is mandatory")
   @Size(min = 2, max = 50, message = "Name must be from 2 to 50 characters")

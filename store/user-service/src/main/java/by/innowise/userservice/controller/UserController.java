@@ -3,9 +3,12 @@ package by.innowise.userservice.controller;
 import by.innowise.userservice.model.dto.UserCreationDto;
 import by.innowise.userservice.model.dto.UserDto;
 import by.innowise.userservice.model.dto.UserPatchDto;
+import by.innowise.userservice.model.response.ListResponse;
 import by.innowise.userservice.service.UserService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -42,21 +45,14 @@ public class UserController {
     return ResponseEntity.ok(userService.getUserById(id));
   }
 
+  @GetMapping("/batch")
+  public ResponseEntity<ListResponse<UserDto>> getUsersByIds(@NotNull @RequestParam List<UUID> ids) {
+    return ResponseEntity.ok(userService.getUsersByIds(ids));
+  }
+
   @GetMapping
-  public ResponseEntity<?> getUsersByIds(
-      @RequestParam(required = false) List<UUID> ids,
-      @RequestParam(required = false) String email) {
-
-    if (ids != null && !ids.isEmpty()) {
-      return ResponseEntity.ok(userService.getUsersByIds(ids));
-    }
-
-    if (email != null && !email.isBlank()) {
-      return ResponseEntity.ok(userService.getUserByEmail(email));
-    }
-
-    return ResponseEntity.badRequest()
-        .body("Provide either 'ids' or 'email' as request parameter");
+  public ResponseEntity<?> getUserByEmail(@NotNull @RequestParam String email) {
+    return ResponseEntity.ok(userService.getUserByEmail(email));
   }
 
   @PutMapping("/{id}")

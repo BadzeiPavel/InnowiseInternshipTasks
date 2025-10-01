@@ -9,7 +9,7 @@ import java.util.UUID;
 public class TestDataFactory {
 
   public static UserDto createUser(String name, String surname) {
-    UserDto user = new UserDto();
+    UserDto user = UserDto.builder().build();
     user.setName(name);
     user.setSurname(surname);
     user.setBirthDate(LocalDate.now().minusYears(20));

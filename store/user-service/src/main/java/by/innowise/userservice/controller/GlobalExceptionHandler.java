@@ -1,6 +1,7 @@
 package by.innowise.userservice.controller;
 
 import by.innowise.userservice.exception.EntityNotFoundException;
+import by.innowise.userservice.exception.InvalidQueryParametersException;
 import by.innowise.userservice.model.response.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
@@ -16,6 +17,35 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(EntityNotFoundException.class)
   public ResponseEntity<ErrorResponse> handleNotFound(EntityNotFoundException ex,
+      HttpServletRequest request) {
+    ErrorResponse response = ErrorResponse.builder()
+        .title("Entity Not Found")
+        .name(ex.getClass().getSimpleName())
+        .status(HttpStatus.NOT_FOUND.value())
+        .message(ex.getMessage())
+        .path(request.getRequestURI())
+        .timestamp(LocalDateTime.now())
+        .build();
+    return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+  }
+
+  @ExceptionHandler(InvalidQueryParametersException.class)
+  public ResponseEntity<ErrorResponse> handleInvalidQueryParameter(
+      InvalidQueryParametersException ex,
+      HttpServletRequest request) {
+    ErrorResponse response = ErrorResponse.builder()
+        .title("Invalid Query Parameters")
+        .name(ex.getClass().getSimpleName())
+        .status(HttpStatus.NOT_FOUND.value())
+        .message(ex.getMessage())
+        .path(request.getRequestURI())
+        .timestamp(LocalDateTime.now())
+        .build();
+    return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+  }
+
+  @ExceptionHandler(IllegalArgumentException.class)
+  public ResponseEntity<ErrorResponse> handleIllegalArgument(IllegalArgumentException ex,
       HttpServletRequest request) {
     ErrorResponse response = ErrorResponse.builder()
         .title("Entity Not Found")
