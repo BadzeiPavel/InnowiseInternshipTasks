@@ -42,4 +42,9 @@ public class UserDto {
   private boolean deleted;
 
   private Set<CardInfoDto> cardInfos;
+
+  public UserDto() {
+    this.id = null;
+    this.deleted = false;
+  }
 }

@@ -29,4 +29,9 @@ public class CardInfoDto {
   private LocalDate expirationDate;
 
   private boolean deleted;
+
+  public CardInfoDto() {
+    this.id = null;
+    this.deleted = false;
+  }
 }

@@ -34,7 +34,7 @@ public class CardInfoServiceImpl implements CardInfoService {
   private final CardInfoRepository cardInfoRepository;
   private final UserService userService;
   private final CacheManager cacheManager;
-  private final CardInfoMapper mapper;
+  private final CardInfoMapper cardInfoMapper;
   private final UserMapper userMapper;
 
   @Override
@@ -44,14 +44,14 @@ public class CardInfoServiceImpl implements CardInfoService {
       evict = @CacheEvict(value = RedisConfig.USER_CACHE, key = "#userId")
   )
   public CardInfoDto createCardInfo(UUID userId, CardInfoDto cardInfoDto) {
-    CardInfo cardInfo = mapper.toCardInfo(cardInfoDto);
+    CardInfo cardInfo = cardInfoMapper.toCardInfo(cardInfoDto);
     UserDto userDto = userService.getUserById(userId);
     String number = getUniqueCardNumber();
 
     cardInfo.fillInOnCreate(number, userMapper.toUser(userDto));
 
     CardInfo saved = cardInfoRepository.save(cardInfo);
-    return mapper.toCardInfoDto(saved);
+    return cardInfoMapper.toCardInfoDto(saved);
   }
 
   @Override
@@ -59,7 +59,7 @@ public class CardInfoServiceImpl implements CardInfoService {
   @Cacheable(key = "#id")
   public CardInfoDto getCardInfoById(UUID id) {
     CardInfo cardInfo = findCardInfoById(id);
-    return mapper.toCardInfoDto(cardInfo);
+    return cardInfoMapper.toCardInfoDto(cardInfo);
   }
 
   @Override
@@ -67,7 +67,7 @@ public class CardInfoServiceImpl implements CardInfoService {
 //  @Cacheable(key = "'ids_' + #ids.hashCode()")
   public ListResponse<CardInfoDto> getCardInfosByIds(List<UUID> ids) {
     List<CardInfoDto> cardInfos = cardInfoRepository.findAllByIdIn(ids).stream()
-        .map(mapper::toCardInfoDto)
+        .map(cardInfoMapper::toCardInfoDto)
         .toList();
 
     return ListResponse.<CardInfoDto>builder()
@@ -87,7 +87,7 @@ public class CardInfoServiceImpl implements CardInfoService {
     Objects.requireNonNull(cacheManager.getCache(RedisConfig.USER_CACHE))
         .evict(cardInfo.getUser().getId());
 
-    return mapper.toCardInfoDto(cardInfo);
+    return cardInfoMapper.toCardInfoDto(cardInfo);
   }
 
   @Override
@@ -104,7 +104,7 @@ public class CardInfoServiceImpl implements CardInfoService {
     Objects.requireNonNull(cacheManager.getCache(RedisConfig.USER_CACHE))
         .evict(cardInfo.getUser().getId());
 
-    return mapper.toCardInfoDto(cardInfo);
+    return cardInfoMapper.toCardInfoDto(cardInfo);
   }
 
   @Override
@@ -121,7 +121,7 @@ public class CardInfoServiceImpl implements CardInfoService {
     Objects.requireNonNull(cacheManager.getCache(RedisConfig.USER_CACHE))
         .evict(cardInfo.getUser().getId());
 
-    return mapper.toCardInfoDto(cardInfo);
+    return cardInfoMapper.toCardInfoDto(cardInfo);
   }
 
   private CardInfo findCardInfoById(UUID id) {
