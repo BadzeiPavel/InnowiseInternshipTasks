@@ -10,18 +10,11 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
-@SpringBootTest
-@Transactional
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class UserServiceImplIT {
+class UserServiceImplIT extends BaseIntegrationTest {
 
   @Autowired
   private UserService userService;
@@ -31,7 +24,7 @@ class UserServiceImplIT {
 
   private UserDto baseUser;
 
-  @BeforeAll
+  @BeforeEach
   void clear() {
     userRepository.deleteAll();
   }
