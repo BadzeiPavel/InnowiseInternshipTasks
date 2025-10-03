@@ -1,0 +1,116 @@
+package by.innowise.userservice.service.impl.integration;
+
+import by.innowise.userservice.model.dto.UserCreationDto;
+import by.innowise.userservice.model.dto.UserDto;
+import by.innowise.userservice.model.dto.UserPatchDto;
+import by.innowise.userservice.model.response.ListResponse;
+import by.innowise.userservice.repository.UserRepository;
+import by.innowise.userservice.service.UserService;
+import java.util.List;
+import java.util.NoSuchElementException;
+import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
+class UserServiceImplIT extends BaseIntegrationTest {
+
+  @Autowired
+  private UserService userService;
+
+  @Autowired
+  private UserRepository userRepository;
+
+  private UserDto baseUser;
+
+  @BeforeEach
+  void clear() {
+    userRepository.deleteAll();
+  }
+
+  @BeforeEach
+  void setup() {
+    UserCreationDto user = TestDataFactory.createUserCreationDto("John", "Doe");
+
+    baseUser = userService.createUser(user);
+  }
+
+  @Test
+  void createUser_shouldPersistAndCache() {
+    UserCreationDto dto = TestDataFactory.createUserCreationDto("Alice", "Smith");
+
+    UserDto result = userService.createUser(dto);
+
+    assertThat(result.getId()).isNotNull();
+    assertThat(result.getEmail()).isEqualTo("alice@email.com");
+  }
+
+  @Test
+  void getUserById_shouldReturnFromDbAndCache() {
+    UserDto found = userService.getUserById(baseUser.getId());
+
+    assertThat(found.getId()).isEqualTo(baseUser.getId());
+    assertThat(found.getEmail()).isEqualTo(baseUser.getEmail());
+  }
+
+  @Test
+  void getUsersByIds_shouldReturnMultiple() {
+    UserDto u1 = userService.createUser(TestDataFactory.createUserCreationDto("Jack", "Jackwho"));
+    UserDto u2 = userService.createUser(
+        TestDataFactory.createUserCreationDto("Russel", "Russelwho"));
+
+    ListResponse<UserDto> response = userService.getUsersByIds(List.of(u1.getId(), u2.getId()));
+
+    assertThat(response.getItems()).hasSize(2);
+    assertThat(response.getItems())
+        .extracting(UserDto::getEmail)
+        .containsExactlyInAnyOrder("jack@email.com", "russel@email.com");
+  }
+
+  @Test
+  void getUserByEmail_shouldReturnUser() {
+    UserDto found = userService.getUserByEmail(baseUser.getEmail());
+
+    assertThat(found.getId()).isEqualTo(baseUser.getId());
+    assertThat(found.getName()).isEqualTo("John");
+  }
+
+  @Test
+  void updateUser_shouldReplaceAllFields() {
+    UserDto dto = TestDataFactory.createUser("Updated", "Doe");
+
+    UserDto updated = userService.updateUser(baseUser.getId(), dto);
+
+    assertThat(updated.getEmail()).isEqualTo("updated@email.com");
+    assertThat(updated.getName()).isEqualTo("Updated");
+  }
+
+  @Test
+  void patchUser_shouldUpdateOnlyGivenFields() {
+    UserPatchDto patch = new UserPatchDto();
+    patch.setName("Partial");
+
+    UserDto patched = userService.patchUser(baseUser.getId(), patch);
+
+    assertThat(patched.getName()).isEqualTo("Partial");
+    assertThat(patched.getSurname()).isEqualTo("Doe"); // unchanged
+  }
+
+  @Test
+  void softDeleteUser_shouldMarkDeleted() {
+    userService.softDeleteUser(baseUser.getId());
+
+    Assertions.assertThrows(
+        NoSuchElementException.class,
+        () -> userRepository.findUserById(baseUser.getId()).orElseThrow());
+  }
+
+  @Test
+  void hardDeleteUser_shouldRemoveFromDb() {
+    userService.hardDeleteUser(baseUser.getId());
+
+    boolean exists = userRepository.findById(baseUser.getId()).isPresent();
+    assertThat(exists).isFalse();
+  }
+}

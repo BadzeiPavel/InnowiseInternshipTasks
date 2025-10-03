@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: user-service-test
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+
+  liquibase:
+    change-log: classpath:db/db.changelog-master.xml
+
+  cache:
+    type: redis
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
